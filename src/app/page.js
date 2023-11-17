@@ -18,9 +18,9 @@ export default async function Home() {
         <div className="text-5xl">🚀</div>
       </header>
       <section className="px-3  mt-10 flex-1 overflow-auto">
-        {/* <Suspense fallback={<h2>loading...</h2>}> */}
-        <WordList words={words} />
-        {/* </Suspense> */}
+        <Suspense fallback={<h2>loading...</h2>}>
+          <WordList words={words} />
+        </Suspense>
       </section>
       <footer className="px-3">Footer</footer>
     </main>
