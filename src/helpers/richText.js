@@ -16,5 +16,11 @@ export const formatRichTextForUI = (description) => {
 };
 
 export const formatRichTextForApi = (content) => {
-  return draftToHtml(convertToRaw(content.getCurrentContent()));
+  content = content?.getCurrentContent();
+
+  if (content?.hasText()) {
+    return draftToHtml(convertToRaw(content));
+  }
+
+  return null;
 };

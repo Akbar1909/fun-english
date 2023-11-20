@@ -7,7 +7,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 const styles = {
   root: {},
   "public-DraftEditor-content": {
-    minHeight: "300px",
+    minHeight: "100px",
     paddingLeft: "10px",
     borderRadius: "6px",
   },

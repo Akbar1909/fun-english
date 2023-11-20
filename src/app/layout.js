@@ -18,10 +18,25 @@ export default function RootLayout({ children }) {
     <html lang="en" className="light">
       <body>
         <AllProviders>
-          <Container maxWidth="auto">
+          <Container
+            maxWidth="auto"
+            sx={{
+              backgroundColor: "common.white",
+              height: "auto",
+              minHeight: "100vh",
+              p: 0,
+            }}
+          >
             <MainLayoutHeader />
-            <Box sx={{ my: { xs: 8, sm: 9 } }}>{children}</Box>
+            <Box
+              sx={{
+                my: { xs: 8, sm: 9 },
+              }}
+            >
+              {children}
+            </Box>
           </Container>
+          <footer>Footer</footer>
         </AllProviders>
       </body>
     </html>

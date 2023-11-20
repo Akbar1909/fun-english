@@ -1,7 +1,7 @@
 "use client";
 import NextAppDirEmotionCacheProvider from "./EmotionCache";
 import PropTypes from "prop-types";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 // @mui
 import { CssBaseline } from "@mui/material";
 import {

@@ -1,18 +1,27 @@
+import Link from "next/link";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import AdbIcon from "@mui/icons-material/Adb";
-import MobileMenuIcon from "./MobileMenuIcon.client";
 
 function MainLayoutHeader() {
   return (
     <AppBar position="fixed">
-      <Container maxWidth="auto" sx={{ backgroundColor: "primary.light" }}>
+      <Container
+        maxWidth="auto"
+        sx={{ backgroundColor: "common.white", boxShadow: "none" }}
+      >
         <Toolbar disableGutters>
-          <Typography variant="h3" noWrap component="a">
-            English Ambulance 🚑
-          </Typography>
+          <Link href="/">
+            <Typography
+              color={"primary.light"}
+              variant="h3"
+              noWrap
+              component="a"
+            >
+              English Metro🚈
+            </Typography>
+          </Link>
 
           {/* <MobileMenuIcon /> */}
         </Toolbar>
