@@ -1,6 +1,14 @@
 import axios from "axios";
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
-const isServer = typeof window === "undefined";
+let isServer = false;
+if (typeof window !== "undefined") {
+  // Use window object safely here
+  isServer = typeof window === "undefined";
+  // Other window-related code
+} else {
+  // Handle code for non-browser environments (e.g., Node.js)
+  console.log("Code is running in a non-browser environment");
+}
 
 const request = axios.create({
   baseURL,
