@@ -149,20 +149,20 @@ const MyFileUploader = ({
 
     document.body.append(overlay);
 
-    window.addEventListener("dragover", handleWindowDragOver);
-    window.addEventListener("dragenter", handleWindowDragEnter);
-    window.addEventListener("dragleave", handleWindowDragLeave);
-    window.addEventListener("drop", handleWindowDrop);
-    window.addEventListener("paste", handlePaste);
+    global.window.addEventListener("dragover", handleWindowDragOver);
+    global.window.addEventListener("dragenter", handleWindowDragEnter);
+    global.window.addEventListener("dragleave", handleWindowDragLeave);
+    global.window.addEventListener("drop", handleWindowDrop);
+    global.window.addEventListener("paste", handlePaste);
 
     return () => {
       overlay.remove();
 
-      window.removeEventListener("keydown", handlePaste);
-      window.removeEventListener("dragover", handleWindowDragOver);
-      window.removeEventListener("dragenter", handleWindowDragEnter);
-      window.removeEventListener("dragleave", handleWindowDragLeave);
-      window.removeEventListener("drop", handleWindowDrop);
+      global.window.removeEventListener("keydown", handlePaste);
+      global.window.removeEventListener("dragover", handleWindowDragOver);
+      global.window.removeEventListener("dragenter", handleWindowDragEnter);
+      global.window.removeEventListener("dragleave", handleWindowDragLeave);
+      global.window.removeEventListener("drop", handleWindowDrop);
     };
   }, []);
 
