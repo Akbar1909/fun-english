@@ -1,5 +1,4 @@
 "use client";
-import dynamic from "next/dynamic";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import {
   TextField,
@@ -21,7 +20,7 @@ import { WORD_LEVELS, prepareWordDto } from "@/data/word/word.provider";
 import { scrollToTop } from "@/helpers/window";
 
 const AddWordForm = () => {
-  const { register, control, handleSubmit, watch, reset } = useForm({
+  const { control, handleSubmit, watch, reset } = useForm({
     defaultValues: {
       photos: [],
       example: EditorState.createEmpty(),

@@ -1,10 +1,10 @@
 import { AddWordForm } from "@/components/AddWordForm";
 import Head from "next/head";
-import { Container, Typography, Grid, Box } from "@mui/material";
+import { Typography, Grid, Box } from "@mui/material";
 import { AddWordTagForm } from "@/components/AddWordTagForm";
 import { WordTagList } from "@/components/WordTagList";
 import { Suspense } from "react";
-import { isSSR } from "@/helpers/window";
+import ClientWrapper from "@/components/ClientWrapper";
 
 const page = async () => {
   return (
@@ -22,14 +22,18 @@ const page = async () => {
           <Typography variant="h3" mb={2}>
             Add a new word
           </Typography>
-          {!isSSR() && <AddWordForm />}
+          <ClientWrapper>
+            <AddWordForm />
+          </ClientWrapper>
         </Grid>
 
         <Grid item xs={12} md={6} lg={4}>
           <Typography variant="h3" mb={2}>
             Add a new word tag
           </Typography>
-          {!isSSR() && <AddWordTagForm />}
+          <ClientWrapper>
+            <AddWordTagForm />
+          </ClientWrapper>
           <Box mt={2}>
             <Suspense fallback={<h1>Loading...</h1>}>
               <WordTagList />
