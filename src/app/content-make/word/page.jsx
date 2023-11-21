@@ -4,6 +4,7 @@ import { Container, Typography, Grid, Box } from "@mui/material";
 import { AddWordTagForm } from "@/components/AddWordTagForm";
 import { WordTagList } from "@/components/WordTagList";
 import { Suspense } from "react";
+import { isSSR } from "@/helpers/window";
 
 const page = async () => {
   return (
@@ -21,14 +22,14 @@ const page = async () => {
           <Typography variant="h3" mb={2}>
             Add a new word
           </Typography>
-          <AddWordForm />
+          {!isSSR() && <AddWordForm />}
         </Grid>
 
         <Grid item xs={12} md={6} lg={4}>
           <Typography variant="h3" mb={2}>
             Add a new word tag
           </Typography>
-          <AddWordTagForm />
+          {!isSSR() && <AddWordTagForm />}
           <Box mt={2}>
             <Suspense fallback={<h1>Loading...</h1>}>
               <WordTagList />
