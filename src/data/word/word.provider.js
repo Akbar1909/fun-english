@@ -6,7 +6,7 @@ export const prepareWordDto = (values) => {
     example: formatRichTextForApi(values.example),
     description: formatRichTextForApi(values.description),
     wordTagId: values.wordTag?.value,
-    level: values.wordLabel?.value,
+    level: values.wordLevel?.value,
     mediaId: values.photos?.[0]?.mediaId,
   };
 };
