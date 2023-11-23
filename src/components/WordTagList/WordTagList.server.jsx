@@ -8,8 +8,8 @@ const WordTagList = async () => {
 
   return (
     <Stack direction="column" rowGap={"6px"}>
-      {data.map(({ tag, color, wordTagId }) => (
-        <Box key={wordTagId}>
+      {data.map(({ tag, color, wordTagId }, i) => (
+        <Box key={i}>
           <Typography
             sx={{
               position: "relative",
