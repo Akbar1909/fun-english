@@ -1,10 +1,6 @@
 import { Box, Typography, Stack } from "@mui/material";
 import Image from "next/image";
 
-const myLoader = ({ src, width, quality }) => {
-  return `${process.env.NEXT_PUBLIC_STATIC_PATH}/${mediaName}`;
-};
-
 export default function WordCard({
   word,
   description,
@@ -47,7 +43,6 @@ export default function WordCard({
             height={300}
             src={`${process.env.NEXT_PUBLIC_STATIC_PATH}/${mediaName}`}
             alt="bird"
-            loader={myLoader}
             priority
           />
         ) : null}
