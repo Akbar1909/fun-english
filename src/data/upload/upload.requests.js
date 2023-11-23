@@ -2,7 +2,7 @@ import request from "@/services/request";
 
 export function httpPostUpload(formData) {
   return request({
-    url: "/upload",
+    url: "/files",
     method: "POST",
     headers: { "Content-type": "multipart/form-data" },
     data: formData,
@@ -11,12 +11,12 @@ export function httpPostUpload(formData) {
 
 export function httpGetFile(id) {
   return request({
-    url: `/upload/${id}`,
+    url: `/files/${id}`,
     method: "GET",
     headers: { "Content-type": "multipart/form-data" },
   });
 }
 
 export function httpDeleteFile(id) {
-  return request.delete(`/upload/${id}`);
+  return request.delete(`/files/${id}`);
 }
