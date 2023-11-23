@@ -4,8 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "akbar.help",
-        port: "",
+        hostname: "**",
       },
       {
         protocol: "http",
