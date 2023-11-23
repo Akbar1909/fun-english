@@ -41,7 +41,7 @@ export default function WordCard({
             className="text-center"
             width={300}
             height={300}
-            loader={() => `${process.env.NEXT_PUBLIC_STATIC_PATH}/${mediaName}`}
+            src={`${process.env.NEXT_PUBLIC_STATIC_PATH}/${mediaName}`}
             alt="bird"
             priority
           />
