@@ -20,7 +20,7 @@ const page = async () => {
       >
         <Grid item xs={12} md={6} lg={8}>
           <Typography variant="h3" mb={2}>
-            Add a new word
+            Add a new word test
           </Typography>
           <ClientWrapper>
             <AddWordForm />
