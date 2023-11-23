@@ -207,14 +207,7 @@ const MyFileUploader = ({
   );
 };
 
-function FileWidget({
-  originalName,
-  handleDeleteFile,
-  index,
-  filePath,
-  readOnly,
-  id,
-}) {
+function FileWidget({ originalName, handleDeleteFile, index, readOnly, id }) {
   const [openPreview, setOpenPreview] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
   const downloadMutation = useQuery({
