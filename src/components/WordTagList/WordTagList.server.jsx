@@ -2,7 +2,7 @@ import { Stack, Typography, Box } from "@mui/material";
 const WordTagList = async () => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/word-tags/`,
-    { next: { tags: ["word-tags"] }, cache: "no-store" }
+    { next: { tags: ["word-tags"], revalidate: 5 }, cache: "no-store" }
   );
   const { data } = await response.json();
 
