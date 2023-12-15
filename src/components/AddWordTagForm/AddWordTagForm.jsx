@@ -14,18 +14,7 @@ import {
 } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Slider,
-  Sketch,
-  Material,
-  Colorful,
-  Compact,
-  Circle,
-  Wheel,
-  Block,
-  Github,
-  Chrome,
-} from "@uiw/react-color";
+import { Chrome } from "@uiw/react-color";
 import { httpPostWordTag } from "@/data/word-tag/word-tag.requests";
 import revalidateWordTags from "@/app/server.actions";
 import { useRouter } from "next/navigation";
@@ -41,7 +30,7 @@ const AddWordTagForm = () => {
   const { mutate, status } = useMutation({
     mutationFn: httpPostWordTag,
     onSuccess: (response) => {
-      router.refresh();
+      revalidateWordTags();
       queryClient.refetchQueries(["word-tags"]);
     },
   });
