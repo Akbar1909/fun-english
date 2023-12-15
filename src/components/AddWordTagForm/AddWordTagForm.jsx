@@ -28,9 +28,11 @@ import {
 } from "@uiw/react-color";
 import { httpPostWordTag } from "@/data/word-tag/word-tag.requests";
 import revalidateWordTags from "@/app/server.actions";
+import { useRouter } from "next/navigation";
 
 const AddWordTagForm = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [openPicker, setOpenPicker] = useState(false);
   const { control, handleSubmit, watch, setValue, reset } = useForm({
     color: "",
@@ -39,7 +41,7 @@ const AddWordTagForm = () => {
   const { mutate, status } = useMutation({
     mutationFn: httpPostWordTag,
     onSuccess: (response) => {
-      revalidateWordTags();
+      router.refresh();
       queryClient.refetchQueries(["word-tags"]);
     },
   });
