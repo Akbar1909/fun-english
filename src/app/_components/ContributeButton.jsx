@@ -22,7 +22,7 @@ const ContributeButton = () => {
       <Button
         ref={buttonRef}
         variant="contained"
-        sx={{ width: 200 }}
+        sx={{ width: 200, backgroundColor: "primary.light" }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >

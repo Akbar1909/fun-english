@@ -7,6 +7,7 @@ export const prepareWordDto = (values) => {
     description: formatRichTextForApi(values.description),
     wordTagId: values.wordTag?.value,
     level: values.wordLevel?.value,
+    partOfSpeech: values.partOfSpeech.value,
     mediaId: values.photos?.[0]?.mediaId,
   };
 };

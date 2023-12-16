@@ -1,6 +1,8 @@
 import { Box, Typography, Stack } from "@mui/material";
 import Image from "next/image";
 
+const WORD_CARD_RADIUS = "12px";
+
 export default function WordCard({
   word,
   description,
@@ -11,7 +13,11 @@ export default function WordCard({
   return (
     <Box>
       <Box
-        sx={{ backgroundColor: color }}
+        sx={{
+          backgroundColor: color,
+          borderTopRightRadius: WORD_CARD_RADIUS,
+          borderTopLeftRadius: WORD_CARD_RADIUS,
+        }}
         display="flex"
         justifyContent="center"
         textAlign="center"
@@ -53,7 +59,14 @@ export default function WordCard({
         ></Box>
       </Stack>
 
-      <Box py={1} sx={{ backgroundColor: color }}>
+      <Box
+        py={1}
+        sx={{
+          backgroundColor: color,
+          borderBottomLeftRadius: WORD_CARD_RADIUS,
+          borderBottomRightRadius: WORD_CARD_RADIUS,
+        }}
+      >
         <Typography
           variant="body1"
           textAlign="center"

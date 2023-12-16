@@ -19,6 +19,25 @@ import useWordTags from "@/hooks/api/useWordTags";
 import { WORD_LEVELS, prepareWordDto } from "@/data/word/word.provider";
 import { scrollToTop } from "@/helpers/window";
 
+const PART_OF_SPEECH_OPTIONS = [
+  {
+    label: "noun",
+    value: "noun",
+  },
+  {
+    label: "verb",
+    value: "verb",
+  },
+  {
+    label: "adjective",
+    value: "adjective",
+  },
+  {
+    label: "adverb",
+    value: "adverb",
+  },
+];
+
 const AddWordForm = () => {
   const { control, handleSubmit, watch, reset } = useForm({
     defaultValues: {
@@ -102,6 +121,32 @@ const AddWordForm = () => {
                             {...params}
                             size="small"
                             label="Word Tag"
+                            InputProps={{
+                              ...params.InputProps,
+                            }}
+                          />
+                        )}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Controller
+                    control={control}
+                    name="partOfSpeech"
+                    defaultValue=""
+                    render={({ field }) => (
+                      <Autocomplete
+                        freeSolo
+                        disableClearable
+                        options={PART_OF_SPEECH_OPTIONS}
+                        {...field}
+                        onChange={(e, value) => field.onChange(value)}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            size="small"
+                            label="Part of speech"
                             InputProps={{
                               ...params.InputProps,
                             }}
