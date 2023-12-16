@@ -12,16 +12,9 @@ function MainLayoutHeader() {
         sx={{ backgroundColor: "common.white", boxShadow: "none" }}
       >
         <Toolbar disableGutters>
-          <Link href="/">
-            <Typography
-              color={"primary.light"}
-              variant="h3"
-              noWrap
-              component="a"
-            >
-              English Metro🚈
-            </Typography>
-          </Link>
+          <Typography color={"primary.light"} variant="h3" noWrap component="a">
+            <Link href="/">English Metro🚈</Link>
+          </Typography>
 
           {/* <MobileMenuIcon /> */}
         </Toolbar>

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@builder.io/react-hydration-overlay": "0.0.5",
     "@emotion/cache": "11.11.0",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",

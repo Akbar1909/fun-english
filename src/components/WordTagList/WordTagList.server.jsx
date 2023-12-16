@@ -22,7 +22,7 @@ const WordTagList = async () => {
                 left: 0,
                 top: "50%",
                 transform: "translateY(-50%)",
-                backgroundColor: color || "red",
+                backgroundColor: color || "primary.light",
                 borderRadius: "50%",
               },
             }}

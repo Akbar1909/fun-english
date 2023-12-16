@@ -33,7 +33,7 @@ export default function WordCard({
           {word}
         </Typography>
         <Box
-          sx={{ width: "100%", px: 1 }}
+          sx={{ width: "100%", px: 1, "&>p": { wordBreak: "break-word" } }}
           dangerouslySetInnerHTML={{ __html: description }}
         ></Box>
         {mediaName ? (
@@ -48,7 +48,7 @@ export default function WordCard({
         ) : null}
 
         <Box
-          sx={{ width: "100%", px: 1 }}
+          sx={{ width: "100%", px: 1, "&>p": { wordBreak: "break-word" } }}
           dangerouslySetInnerHTML={{ __html: example }}
         ></Box>
       </Stack>
