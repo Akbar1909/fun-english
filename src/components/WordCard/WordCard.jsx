@@ -9,6 +9,8 @@ export default function WordCard({
   example,
   wordTag: { tag, color },
   mediaName,
+  preview = false,
+  dataUrl,
 }) {
   return (
     <Box>
@@ -42,7 +44,8 @@ export default function WordCard({
           sx={{ width: "100%", px: 1, "&>p": { wordBreak: "break-word" } }}
           dangerouslySetInnerHTML={{ __html: description }}
         ></Box>
-        {mediaName ? (
+
+        {mediaName && !preview ? (
           <Image
             className="text-center"
             width={300}
@@ -50,6 +53,13 @@ export default function WordCard({
             src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${mediaName}`}
             alt="bird"
             priority
+          />
+        ) : null}
+
+        {preview ? (
+          <div
+            className="img-preview"
+            style={{ width: "100%", float: "left", height: "300px" }}
           />
         ) : null}
 

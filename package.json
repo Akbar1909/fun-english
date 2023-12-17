@@ -28,6 +28,7 @@
     "pg": "8.11.3",
     "preline": "2.0.0",
     "react": "^18",
+    "react-cropper": "2.3.3",
     "react-dom": "^18",
     "react-draft-wysiwyg": "1.15.0",
     "react-drag-drop-files": "2.3.10",

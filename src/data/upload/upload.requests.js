@@ -20,3 +20,7 @@ export function httpGetFile(id) {
 export function httpDeleteFile(id) {
   return request.delete(`/files/${id}`);
 }
+
+export function httpPostDataUrl(dataUrl) {
+  return request.post("/files/data-url", { dataUrl });
+}

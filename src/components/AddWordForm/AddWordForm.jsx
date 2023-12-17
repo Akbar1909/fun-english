@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import {
   TextField,
@@ -11,13 +12,13 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import MyEditor from "@/components/MyEditor";
 import { PreviewWordCard } from "@/components/PreviewWordCard";
-import MyFileUploader from "@/components/MyFileUploader";
 import { EditorState } from "draft-js";
 import { formatRichTextForApi } from "@/helpers/richText";
 import { httpPostWord } from "@/data/word/word.request";
 import useWordTags from "@/hooks/api/useWordTags";
 import { WORD_LEVELS, prepareWordDto } from "@/data/word/word.provider";
 import { scrollToTop } from "@/helpers/window";
+import MyCropper from "../MyCropper";
 
 const PART_OF_SPEECH_OPTIONS = [
   {
@@ -39,7 +40,8 @@ const PART_OF_SPEECH_OPTIONS = [
 ];
 
 const AddWordForm = () => {
-  const { control, handleSubmit, watch, reset } = useForm({
+  const [mediaId, setMediaId] = useState();
+  const { control, handleSubmit, watch, reset, setValue } = useForm({
     defaultValues: {
       photos: [],
       example: EditorState.createEmpty(),
@@ -54,20 +56,18 @@ const AddWordForm = () => {
 
   const wordTagsServerState = useWordTags();
 
-  const { remove, append } = useFieldArray({ name: "photos", control });
-
-  const photos = watch("photos");
   const word = watch("word");
   const description = watch("description");
   const example = watch("example");
   const wordTag = watch("wordTag");
+  const externalMedia = watch("externalMedia");
 
   const selectedTag = wordTagsServerState.options.find(
     (option) => option.wordTagId === wordTag?.value
   );
 
   const onSubmit = handleSubmit((values) => {
-    mutate(prepareWordDto(values));
+    mutate(prepareWordDto({ ...values, mediaId }));
   });
   const handleCancel = () => reset();
 
@@ -197,17 +197,10 @@ const AddWordForm = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <Controller
-                    name="photos"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <MyFileUploader
-                        {...field}
-                        remove={remove}
-                        append={append}
-                      />
-                    )}
+                  <MyCropper
+                    image={externalMedia}
+                    setImage={(value) => setValue("externalMedia", value)}
+                    setMediaId={(value) => setMediaId(value)}
                   />
                 </Grid>
 
@@ -239,8 +232,7 @@ const AddWordForm = () => {
                   tag: selectedTag?.label || "",
                   color: selectedTag?.color,
                 }}
-                mediaId={photos?.[0]?.mediaId}
-                mediaName={photos?.[0]?.filename}
+                dataUrl={externalMedia}
                 word={word}
               />
             </Grid>
