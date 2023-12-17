@@ -2,7 +2,7 @@
 import { Box } from "@mui/material";
 import { WordCard } from "../WordCard";
 
-const PreviewWordCard = ({ mediaId, mediaName, dataUrl = "", ...props }) => {
+const PreviewWordCard = ({ mediaId, mediaName, ...props }) => {
   return (
     <Box
       sx={{
@@ -12,7 +12,7 @@ const PreviewWordCard = ({ mediaId, mediaName, dataUrl = "", ...props }) => {
         transform: "translateX(-50%)",
       }}
     >
-      <WordCard preview {...props} dataUrl={dataUrl} mediaName={mediaName} />
+      <WordCard preview {...props} mediaName={mediaName} />
     </Box>
   );
 };

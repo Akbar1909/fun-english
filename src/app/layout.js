@@ -4,10 +4,13 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "react-toastify/dist/ReactToastify.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config } from "@fortawesome/fontawesome-svg-core";
 import { AllProviders } from "@/providers";
 import { MainLayoutHeader } from "@/components/MainLayoutHeader";
 import { Box, Container } from "@mui/material";
 
+config.autoAddCss = false;
 export const metadata = {
   title: "English Ambulance",
   description: "Created by Someone",

@@ -10,7 +10,6 @@ export default function WordCard({
   wordTag: { tag, color },
   mediaName,
   preview = false,
-  dataUrl,
 }) {
   return (
     <Box>

@@ -1,30 +1,11 @@
 "use client";
-import React, { useState, useRef } from "react";
-import { Button, Stack, Box, TextField } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { forwardRef } from "react";
+import { Stack, Box, TextField, Button } from "@mui/material";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import "./MyCropper.css";
-import { httpPostDataUrl } from "@/data/upload";
-import notification from "@/services/notification";
 
-const defaultSrc =
-  "https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg";
-
-export const MyCropper = ({ image, setImage, setMediaId }) => {
-  const cropperRef = useRef(null);
-  const [externalUrl, setExternalUrl] = useState("");
-
-  const dataUrlMutate = useMutation({
-    mutationFn: httpPostDataUrl,
-    onSuccess: () => {
-      notification.setMode("success").setMessage("Save successfully").pop();
-    },
-    onError: () => {
-      notification.setMode("error").setMessage("Note Saved").pop();
-    },
-  });
-
+export const MyCropper = ({ image, setImage, register }, ref) => {
   const onChange = (e) => {
     e.preventDefault();
     let files;
@@ -37,17 +18,8 @@ export const MyCropper = ({ image, setImage, setMediaId }) => {
     reader.onload = () => {
       setImage(reader.result);
     };
+
     reader.readAsDataURL(files[0]);
-  };
-
-  const getCropData = async () => {
-    if (typeof cropperRef.current?.cropper !== "undefined") {
-      const response = await dataUrlMutate.mutateAsync(
-        cropperRef.current?.cropper.getCroppedCanvas().toDataURL()
-      );
-
-      setMediaId(response.data?.data?.mediaId);
-    }
   };
 
   return (
@@ -57,18 +29,25 @@ export const MyCropper = ({ image, setImage, setMediaId }) => {
           sx={{ width: "100%" }}
           label="External url"
           size="small"
-          onChange={(e) => setImage(e.target.value)}
+          onChange={(e) => {
+            setImage(e.target.value);
+          }}
           value={typeof image === "string" ? image : ""}
         />
       </Box>
-      <Box>
-        <TextField type="file" onChange={onChange} />
-      </Box>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <TextField type="file" {...register("file")} onChange={onChange} />
+        {image && (
+          <Button onClick={() => ref.current.cropper.reset()}>
+            Reset The image
+          </Button>
+        )}
+      </Stack>
 
       <Cropper
-        ref={cropperRef}
+        ref={ref}
         style={{ height: 400, width: "100%" }}
-        zoomTo={0.5}
+        zoomTo={0.3}
         initialAspectRatio={1}
         preview=".img-preview"
         src={image}
@@ -81,12 +60,8 @@ export const MyCropper = ({ image, setImage, setMediaId }) => {
         checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
         guides={true}
       />
-
-      <Button onClick={getCropData} variant="contained">
-        {dataUrlMutate.isPending ? "Saving Photo..." : "Save Photo"}
-      </Button>
     </Stack>
   );
 };
 
-export default MyCropper;
+export default forwardRef(MyCropper);

@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useRef } from "react";
+import { useForm, Controller } from "react-hook-form";
 import {
   TextField,
   Grid,
@@ -8,6 +8,8 @@ import {
   Box,
   Autocomplete,
   Alert,
+  FormLabel,
+  Stack,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import MyEditor from "@/components/MyEditor";
@@ -18,6 +20,8 @@ import { httpPostWord } from "@/data/word/word.request";
 import useWordTags from "@/hooks/api/useWordTags";
 import { WORD_LEVELS, prepareWordDto } from "@/data/word/word.provider";
 import { scrollToTop } from "@/helpers/window";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBroom } from "@fortawesome/free-solid-svg-icons";
 import MyCropper from "../MyCropper";
 
 const PART_OF_SPEECH_OPTIONS = [
@@ -40,8 +44,8 @@ const PART_OF_SPEECH_OPTIONS = [
 ];
 
 const AddWordForm = () => {
-  const [mediaId, setMediaId] = useState();
-  const { control, handleSubmit, watch, reset, setValue } = useForm({
+  const cropperRef = useRef(null);
+  const { control, handleSubmit, watch, reset, setValue, register } = useForm({
     defaultValues: {
       photos: [],
       example: EditorState.createEmpty(),
@@ -49,7 +53,7 @@ const AddWordForm = () => {
     },
   });
 
-  const { mutate, status } = useMutation({
+  const { status, isPending, mutateAsync } = useMutation({
     mutationFn: httpPostWord,
     onSettled: scrollToTop,
   });
@@ -66,10 +70,24 @@ const AddWordForm = () => {
     (option) => option.wordTagId === wordTag?.value
   );
 
-  const onSubmit = handleSubmit((values) => {
-    mutate(prepareWordDto({ ...values, mediaId }));
+  const onSubmit = handleSubmit(async (values) => {
+    if (typeof cropperRef.current?.cropper !== "undefined") {
+      const dataUrl = cropperRef.current?.cropper
+        .getCroppedCanvas()
+        .toDataURL();
+
+      const response = await mutateAsync(
+        prepareWordDto({ ...values, dataUrl })
+      );
+
+      console.log(response);
+    }
   });
-  const handleCancel = () => reset();
+  const handleCancel = () => {
+    reset();
+    setValue("externalMedia", null);
+    cropperRef.current.cropper.destroy();
+  };
 
   return (
     <>
@@ -183,6 +201,7 @@ const AddWordForm = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
+                  <FormLabel>Enter description</FormLabel>
                   <Controller
                     name="description"
                     control={control}
@@ -197,14 +216,7 @@ const AddWordForm = () => {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <MyCropper
-                    image={externalMedia}
-                    setImage={(value) => setValue("externalMedia", value)}
-                    setMediaId={(value) => setMediaId(value)}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
+                  <FormLabel>Enter example</FormLabel>
                   <Controller
                     name="example"
                     defaultValue=""
@@ -214,13 +226,36 @@ const AddWordForm = () => {
                     )}
                   />
                 </Grid>
+
+                <Grid item xs={12}>
+                  <MyCropper
+                    register={register}
+                    ref={cropperRef}
+                    image={externalMedia}
+                    setImage={(value) => setValue("externalMedia", value)}
+                  />
+                </Grid>
+
                 <Grid item xs={12} textAlign="right">
-                  <Button sx={{ mr: 1 }} onClick={handleCancel}>
-                    Reset
-                  </Button>
-                  <Button type="submit" variant="contained">
-                    Save
-                  </Button>
+                  <Stack direction="column">
+                    <Button
+                      sx={{ width: "100%", mb: 1 }}
+                      type="submit"
+                      variant="contained"
+                      disabled={isPending}
+                    >
+                      {isPending ? "Saving..." : "Save"}
+                    </Button>
+                    <Button
+                      sx={{ mr: 1, width: "100%" }}
+                      startIcon={<FontAwesomeIcon icon={faBroom} />}
+                      onClick={handleCancel}
+                      color="error"
+                      variant="outlined"
+                    >
+                      Reset
+                    </Button>
+                  </Stack>
                 </Grid>
               </Grid>
             </Grid>
@@ -232,7 +267,6 @@ const AddWordForm = () => {
                   tag: selectedTag?.label || "",
                   color: selectedTag?.color,
                 }}
-                dataUrl={externalMedia}
                 word={word}
               />
             </Grid>

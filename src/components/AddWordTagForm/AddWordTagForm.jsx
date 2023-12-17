@@ -6,8 +6,6 @@ import {
   Grid,
   Button,
   Box,
-  Autocomplete,
-  Select,
   Typography,
   Stack,
   Alert,
@@ -28,6 +26,8 @@ import {
 } from "@uiw/react-color";
 import { httpPostWordTag } from "@/data/word-tag/word-tag.requests";
 import revalidateWordTags from "@/app/server.actions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLightbulb, faBroom } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 
 const AddWordTagForm = () => {
@@ -38,7 +38,7 @@ const AddWordTagForm = () => {
     color: "",
   });
 
-  const { mutate, status } = useMutation({
+  const { mutate, status, isPending } = useMutation({
     mutationFn: httpPostWordTag,
     onSuccess: (response) => {
       router.refresh();
@@ -48,6 +48,9 @@ const AddWordTagForm = () => {
 
   const onSubmit = handleSubmit((values) => mutate(values));
   const color = watch("color");
+
+  const handleCancel = () => reset({});
+
   return (
     <form onSubmit={onSubmit}>
       <Grid container rowSpacing={2}>
@@ -78,9 +81,13 @@ const AddWordTagForm = () => {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Typography variant="container" onClick={() => setOpenPicker(true)}>
+            <Button
+              startIcon={<FontAwesomeIcon icon={faLightbulb} />}
+              variant="outlined"
+              onClick={() => setOpenPicker(true)}
+            >
               Pick Color
-            </Typography>
+            </Button>
             <Box
               sx={{
                 backgroundColor: color || "common.white",
@@ -102,7 +109,7 @@ const AddWordTagForm = () => {
                 }}
                 onClick={() => setOpenPicker(false)}
               />
-              <Chrome
+              <Colorful
                 style={{ marginLeft: 20 }}
                 color={color}
                 onChange={(color) => {
@@ -113,12 +120,25 @@ const AddWordTagForm = () => {
           )}
         </Grid>
         <Grid item xs={12} textAlign="right">
-          <Button sx={{ mr: 1 }} onClick={() => reset()}>
-            Reset
-          </Button>
-          <Button type="submit" variant="contained">
-            Save
-          </Button>
+          <Stack direction="column">
+            <Button
+              sx={{ width: "100%", mb: 1 }}
+              type="submit"
+              variant="contained"
+              disabled={isPending}
+            >
+              {isPending ? "Saving..." : "Save"}
+            </Button>
+            <Button
+              sx={{ mr: 1, width: "100%" }}
+              startIcon={<FontAwesomeIcon icon={faBroom} />}
+              onClick={handleCancel}
+              variant="outlined"
+              color="error"
+            >
+              Reset
+            </Button>
+          </Stack>
         </Grid>
       </Grid>
     </form>
