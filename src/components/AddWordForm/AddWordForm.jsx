@@ -76,9 +76,9 @@ const AddWordForm = () => {
         .getCroppedCanvas()
         .toDataURL();
 
-      const response = await mutateAsync(
-        prepareWordDto({ ...values, dataUrl })
-      );
+      const { externalMedia, ...rest } = values;
+
+      const response = await mutateAsync(prepareWordDto({ ...rest, dataUrl }));
 
       console.log(response);
     }
