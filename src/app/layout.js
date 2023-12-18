@@ -27,7 +27,6 @@ export default function RootLayout({ children }) {
               backgroundColor: "common.white",
               height: "auto",
               minHeight: "100vh",
-              p: 0,
             }}
           >
             <MainLayoutHeader />
