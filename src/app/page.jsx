@@ -8,7 +8,6 @@ import ContributeButton from "./_components/ContributeButton";
 import { fetchWords } from "@/actions/fetch-words";
 import LoadMoreWordsClient from "@/components/LoadMoreWords/LoadMoreWords.client";
 import { Suspense } from "react";
-import { DEFAULT_PAGE_SIZE } from "@/helpers/const";
 
 export default async function Home() {
   const queryClient = new QueryClient();

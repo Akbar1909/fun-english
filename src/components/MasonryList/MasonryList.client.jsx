@@ -1,7 +1,7 @@
 import { Masonry } from "masonic";
 import WordCard from "../WordCard/WordCard.server";
 
-const MasonryList = ({ items }) => {
+const MasonryList = ({ items = [] }) => {
   return (
     <Masonry
       // Provides the data for our grid items
@@ -18,7 +18,7 @@ const MasonryList = ({ items }) => {
           <WordCard
             key={index}
             index={index}
-            mediaName={data.media.filename}
+            mediaName={data?.media?.filename}
             {...data}
           />
         );

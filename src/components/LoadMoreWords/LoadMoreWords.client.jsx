@@ -1,19 +1,17 @@
 "use client";
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Box } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 import { fetchWords } from "@/actions/fetch-words";
 import MasonryList from "../MasonryList/MasonryList.client";
 import WordCard from "../WordCard/WordCard.server";
 import { useEffect } from "react";
-import useInfinityScroll from "@/hooks/useInfinityScroll";
 import InfinitySpinner from "../InfinitySpinner";
 
 function LoadMore() {
-  const { page, size, next, total, setPage, setSize } = useInfinityScroll();
   const { ref, inView } = useInView({ initialInView: false });
 
-  const { status, data, isFetching, error, fetchNextPage } = useInfiniteQuery({
+  const { data, isFetching, error, fetchNextPage } = useInfiniteQuery({
     queryKey: ["words"],
     queryFn: async ({ pageParam = 0 }) => {
       const res = await fetchWords(pageParam);
@@ -24,8 +22,6 @@ function LoadMore() {
       return firstPage?.prev;
     },
     getNextPageParam: (lastPage) => {
-      console.log({ lastPage });
-
       return lastPage?.next ?? undefined;
     },
   });
@@ -37,7 +33,7 @@ function LoadMore() {
   }, [inView, fetchNextPage]);
 
   const items =
-    data?.pages.reduce((acc, cur) => [...acc, ...cur.records], []) || [];
+    data?.pages?.reduce((acc, cur) => [...acc, ...cur.records], []) || [];
 
   if (error) {
     return <Box>Something went wrong 🥺, We are working on it🚀</Box>;
