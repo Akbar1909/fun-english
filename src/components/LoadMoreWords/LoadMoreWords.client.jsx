@@ -32,14 +32,12 @@ function LoadMore() {
     }
   }, [inView, fetchNextPage]);
 
-  const items =
-    data?.pages?.reduce((acc, cur) => [...acc, ...cur.records], []) || [];
-
   if (error) {
     return <Box>Something went wrong 🥺, We are working on it🚀</Box>;
   }
 
-  console.log({ items });
+  const items =
+    data?.pages?.reduce((acc, cur) => [...acc, ...cur.records], []) || [];
 
   return (
     <Box onScroll={(e) => console.log(e)}>
