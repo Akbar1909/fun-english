@@ -12,7 +12,7 @@ const PreviewWordCard = ({ mediaId, mediaName, ...props }) => {
         transform: "translateX(-50%)",
       }}
     >
-      <WordCard preview {...props} mediaName={mediaName} />
+      <WordCard index={0} preview {...props} mediaName={mediaName} />
     </Box>
   );
 };
