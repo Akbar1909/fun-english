@@ -7,7 +7,6 @@ import { Box } from "@mui/material";
 import ContributeButton from "./_components/ContributeButton";
 import { fetchWords } from "@/actions/fetch-words";
 import LoadMoreWordsClient from "@/components/LoadMoreWords/LoadMoreWords.client";
-import { Suspense } from "react";
 
 export default async function Home() {
   const queryClient = new QueryClient();
@@ -24,11 +23,9 @@ export default async function Home() {
         <ContributeButton />
       </Box>
 
-      <Suspense fallback={<div>loading...</div>}>
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          <LoadMoreWordsClient />
-        </HydrationBoundary>
-      </Suspense>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <LoadMoreWordsClient />
+      </HydrationBoundary>
     </main>
   );
 }
