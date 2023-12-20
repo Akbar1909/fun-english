@@ -11,7 +11,7 @@ import LoadMoreWordsClient from "@/components/LoadMoreWords/LoadMoreWords.client
 export default async function Home() {
   const queryClient = new QueryClient();
 
-  const r = await queryClient.prefetchQuery({
+  await queryClient.prefetchQuery({
     queryKey: ["words"],
     queryFn: fetchWords,
     staleTime: Infinity,
@@ -23,9 +23,9 @@ export default async function Home() {
         <ContributeButton />
       </Box>
 
-      <HydrationBoundary state={dehydrate(queryClient)}>
+      {/* <HydrationBoundary state={dehydrate(queryClient)}>
         <LoadMoreWordsClient />
-      </HydrationBoundary>
+      </HydrationBoundary> */}
     </main>
   );
 }
