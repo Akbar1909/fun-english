@@ -1,7 +1,7 @@
 "use client";
 import { useRef } from "react";
 import Link from "next/link";
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 
 const text1 = "Add a new word 😄";
 const text2 = "Yeah, We knew that 🚀";
