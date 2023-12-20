@@ -11,7 +11,7 @@ import LoadMoreWordsClient from "@/components/LoadMoreWords/LoadMoreWords.client
 export default async function Home() {
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
+  const r = await queryClient.prefetchQuery({
     queryKey: ["words"],
     queryFn: fetchWords,
     staleTime: Infinity,
