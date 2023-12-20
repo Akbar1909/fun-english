@@ -23,9 +23,9 @@ export default async function Home() {
         <ContributeButton />
       </Box>
 
-      {/* <HydrationBoundary state={dehydrate(queryClient)}>
+      <HydrationBoundary state={dehydrate(queryClient)}>
         <LoadMoreWordsClient />
-      </HydrationBoundary> */}
+      </HydrationBoundary>
     </main>
   );
 }

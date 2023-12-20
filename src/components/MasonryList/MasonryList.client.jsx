@@ -1,3 +1,4 @@
+"use client";
 import { Masonry } from "masonic";
 import WordCard from "../WordCard/WordCard.server";
 
