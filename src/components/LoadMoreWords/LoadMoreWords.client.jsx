@@ -4,7 +4,6 @@ import { Box } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 import { fetchWords } from "@/actions/fetch-words";
 import MasonryList from "../MasonryList/MasonryList.client";
-import WordCard from "../WordCard/WordCard.server";
 import { useEffect } from "react";
 import InfinitySpinner from "../InfinitySpinner";
 
@@ -40,10 +39,10 @@ function LoadMore() {
     data?.pages?.reduce((acc, cur) => [...acc, ...cur.records], []) || [];
 
   return (
-    <Box onScroll={(e) => console.log(e)}>
-      <MasonryList items={items} Item={WordCard} />
+    <Box>
+      <MasonryList items={items} />
       {isFetching && <InfinitySpinner />}
-      <Box ref={ref}></Box>
+      <Box ref={ref} />
     </Box>
   );
 }
