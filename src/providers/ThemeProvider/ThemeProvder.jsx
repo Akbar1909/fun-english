@@ -15,6 +15,7 @@ import shadows from "./shadows";
 import typography from "./typography";
 import customShadows from "./customShadows";
 import componentsOverride from "./overrides";
+import mainThemeV5 from "@/themes/mainThemeV5";
 
 // ----------------------------------------------------------------------
 
@@ -42,8 +43,8 @@ export default function ThemeProvider({ children }) {
 
   return (
     <NextAppDirEmotionCacheProvider options={{ key: "mui" }}>
-      <MUIThemeProvider theme={theme}>
-        <GlobalStyles theme={theme} />
+      <MUIThemeProvider theme={mainThemeV5}>
+        <GlobalStyles theme={mainThemeV5} />
         <CssBaseline />
         {children}
       </MUIThemeProvider>

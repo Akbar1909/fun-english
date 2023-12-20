@@ -1,24 +1,29 @@
-"use client";
-import Masonry from "react-masonry-css";
+import { Masonry } from "masonic";
+import WordCard from "../WordCard/WordCard.server";
 
-const breakpointColumnsObj = {
-  default: 4,
-  2100: 5,
-  1700: 4,
-  1100: 3,
-  700: 2,
-  500: 1,
-};
-
-const MasonryList = ({ children }) => {
+const MasonryList = ({ items }) => {
   return (
     <Masonry
-      breakpointCols={breakpointColumnsObj}
-      className="my-masonry-grid"
-      columnClassName="my-masonry-grid_column"
-    >
-      {children}
-    </Masonry>
+      // Provides the data for our grid items
+      items={items}
+      // Adds 8px of space between the grid cells
+      columnGutter={8}
+      // Sets the minimum column width to 172px
+      columnWidth={300}
+      // Pre-renders 5 windows worth of content
+      overscanBy={5}
+      // This is the grid item component
+      render={({ data, index }) => {
+        return (
+          <WordCard
+            key={index}
+            index={index}
+            mediaName={data.media.filename}
+            {...data}
+          />
+        );
+      }}
+    />
   );
 };
 

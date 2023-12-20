@@ -27,7 +27,7 @@ const MyEditor = ({
       <FormLabel>{label}</FormLabel>
       <Editor
         toolbarStyle={{
-          borderColor: theme.palette.border.form,
+          borderColor: theme.palette.colors.borderGrey,
           backgroundColor: theme.palette.background.paper,
         }}
         placeholder={placeholder}

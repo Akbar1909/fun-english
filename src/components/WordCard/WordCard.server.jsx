@@ -10,6 +10,7 @@ export default function WordCard({
   wordTag: { tag, color },
   mediaName,
   preview = false,
+  index,
 }) {
   return (
     <Box>
@@ -51,7 +52,6 @@ export default function WordCard({
             height={300}
             src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${mediaName}`}
             alt="bird"
-            priority
           />
         ) : null}
 

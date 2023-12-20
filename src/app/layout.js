@@ -9,6 +9,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import { AllProviders } from "@/providers";
 import { MainLayoutHeader } from "@/components/MainLayoutHeader";
 import { Box, Container } from "@mui/material";
+import EmptyFolderView from "@/components/EmptyFolderView";
 
 config.autoAddCss = false;
 export const metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
               backgroundColor: "common.white",
               height: "auto",
               minHeight: "100vh",
+              p: 0,
             }}
           >
             <MainLayoutHeader />
@@ -40,6 +42,7 @@ export default function RootLayout({ children }) {
           </Container>
           <footer>Footer</footer>
         </AllProviders>
+        <EmptyFolderView />
       </body>
     </html>
   );

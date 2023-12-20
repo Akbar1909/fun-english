@@ -1,6 +1,6 @@
 "use client";
 import { Box } from "@mui/material";
-import { WordCard } from "../WordCard";
+import WordCard from "../WordCard/WordCard.server";
 
 const PreviewWordCard = ({ mediaId, mediaName, ...props }) => {
   return (

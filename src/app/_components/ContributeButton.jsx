@@ -21,8 +21,8 @@ const ContributeButton = () => {
     <Link href="/content-make/word">
       <Button
         ref={buttonRef}
-        variant="contained"
-        sx={{ width: 200, backgroundColor: "primary.light" }}
+        variant="outlined"
+        sx={{ width: 220 }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
