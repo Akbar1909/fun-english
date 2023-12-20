@@ -10,7 +10,7 @@ import get from "lodash.get";
 import { httpDeleteFile, httpGetFile, httpPostUpload } from "@/data/upload";
 import { FileUploader } from "react-drag-drop-files";
 import styles from "./MyFileUploader.styles";
-import { globalStyles } from "@/providers/ThemeProvider/globalStyles";
+import globalStyles from "@/themes/globalStyles";
 import notification from "@/services/notification";
 import ImagePreview from "./ImagePreview";
 
