@@ -35,6 +35,8 @@ function LoadMore() {
     return <Box>Something went wrong 🥺, We are working on it🚀</Box>;
   }
 
+  return <>something</>;
+
   const items =
     data?.pages?.reduce((acc, cur) => [...acc, ...cur.records], []) || [];
 
