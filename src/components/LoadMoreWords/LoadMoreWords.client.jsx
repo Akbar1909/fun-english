@@ -19,7 +19,7 @@ function LoadMore() {
     },
     initialPageParam: 0,
     getPreviousPageParam: (firstPage) => {
-      return firstPage?.prev;
+      return firstPage?.prev ?? undefined;
     },
     getNextPageParam: (lastPage) => {
       return lastPage?.next ?? undefined;
@@ -38,6 +38,8 @@ function LoadMore() {
   if (error) {
     return <Box>Something went wrong 🥺, We are working on it🚀</Box>;
   }
+
+  console.log({ items });
 
   return (
     <Box onScroll={(e) => console.log(e)}>
