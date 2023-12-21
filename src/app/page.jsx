@@ -12,7 +12,7 @@ export default async function Home() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["words"],
+    queryKey: ["words", { page: 0 }],
     queryFn: fetchWords,
     staleTime: Infinity,
   });

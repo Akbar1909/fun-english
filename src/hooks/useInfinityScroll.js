@@ -24,6 +24,7 @@ const useInfinityScroll = () => {
     next: null,
     total: null,
     count: null,
+    list: null,
   });
 
   const setPage = (newPage) =>
@@ -38,9 +39,22 @@ const useInfinityScroll = () => {
       payload: { size: newSize },
     });
 
+  const appendToList = (newItems) => {
+    dispatch({
+      type: ACTION_TYPES.SET_VALUES_TO_ROOT_LEVEL,
+      payload: {
+        list: {
+          ...state.list,
+          ...newItems.reduce((acc, cur) => ({ ...acc, [cur.wordId]: cur }), []),
+        },
+      },
+    });
+  };
+
   return {
     setSize,
     setPage,
+    appendToList,
     ...state,
   };
 };
