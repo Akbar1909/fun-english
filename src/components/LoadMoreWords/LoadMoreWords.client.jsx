@@ -34,7 +34,7 @@ function LoadMore() {
 
   return (
     <Box>
-      <MasonryList items={data?.records || []} />
+      <MasonryList items={data || []} />
       {isFetching && <InfinitySpinner />}
       <Box ref={ref} />
     </Box>
