@@ -1,5 +1,6 @@
 import { Box, Typography, Stack } from "@mui/material";
 import Image from "next/image";
+import WordCardHoverWrapper from "../client-side/WordCardHoverWrapper.client";
 
 const WORD_CARD_RADIUS = "12px";
 
@@ -7,16 +8,18 @@ export default function WordCard({
   word,
   description,
   example,
-  wordTag: { tag, color },
+  wordTag: { tag, ...rest },
   mediaName,
   preview = false,
-  index,
 }) {
+  const color = rest.color || "blue";
+
   return (
-    <Box>
+    <WordCardHoverWrapper color={color}>
       <Box
+        py={0.5}
         sx={{
-          backgroundColor: color || "blue",
+          backgroundColor: color,
           borderTopRightRadius: WORD_CARD_RADIUS,
           borderTopLeftRadius: WORD_CARD_RADIUS,
         }}
@@ -69,9 +72,9 @@ export default function WordCard({
       </Stack>
 
       <Box
-        py={1}
+        py={0.5}
         sx={{
-          backgroundColor: color || "blue",
+          backgroundColor: color,
           borderBottomLeftRadius: WORD_CARD_RADIUS,
           borderBottomRightRadius: WORD_CARD_RADIUS,
         }}
@@ -85,6 +88,6 @@ export default function WordCard({
           EnglishMetro
         </Typography>
       </Box>
-    </Box>
+    </WordCardHoverWrapper>
   );
 }

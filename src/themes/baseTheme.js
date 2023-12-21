@@ -80,6 +80,13 @@ const palette = (themeColors = defaultThemeColors) => ({
     main: themeColors.statusCancelled,
     contrastText: themeColors.white,
   },
+  warning: {
+    lighter: "#FFF7CD",
+    light: "#FFE16A",
+    main: "#FFC107",
+    dark: "#B78103",
+    darker: "#7A4F01",
+  },
   success: {
     main: themeColors.buttonGreen,
     contrastText: themeColors.white,

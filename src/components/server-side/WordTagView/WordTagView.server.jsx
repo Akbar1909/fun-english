@@ -2,16 +2,15 @@ import { Box, Typography } from "@mui/material";
 
 const styles = {
   root: {
-    width: "180px",
-    height: 70,
+    minWidth: "180px",
+    height: 40,
     py: "10px",
     borderRadius: "6px",
     color: "common.white",
-    opacity: 0.8,
   },
   text: {},
   counter: {
-    position: "absolute",
+    // position: "absolute",
     bottom: "10px",
     right: "10px",
     width: "27px",
@@ -31,15 +30,9 @@ const WordTagView = ({ tag, color, count }) => {
       position="relative"
       sx={[styles.root, { backgroundColor: color || "blue" }]}
     >
-      <Typography variant="h3">{tag}</Typography>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        sx={styles.counter}
-      >
-        {count}
-      </Box>
+      <Typography variant="h3" sx={{ textTransform: "capitalize" }}>
+        {tag} ({count})
+      </Typography>
     </Box>
   );
 };
