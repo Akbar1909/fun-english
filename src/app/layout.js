@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { AllProviders } from "@/providers";
-import { MainLayoutHeader } from "@/components/MainLayoutHeader";
+import MainLayoutHeader from "@/components/MainLayoutHeader/MainLayoutHeader.server";
 import { Box, Container } from "@mui/material";
 import EmptyFolderView from "@/components/EmptyFolderView";
 
@@ -28,7 +28,6 @@ export default function RootLayout({ children }) {
               backgroundColor: "common.white",
               height: "auto",
               minHeight: "100vh",
-              p: 0,
             }}
           >
             <MainLayoutHeader />

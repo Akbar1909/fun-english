@@ -28,3 +28,11 @@ export function factoryReducer(actionType) {
     }
   };
 }
+
+export async function forceWait(wait = 3000) {
+  return new Promise((resolve, reject) =>
+    setTimeout(() => {
+      resolve("");
+    }, wait)
+  );
+}

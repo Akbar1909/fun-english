@@ -1,5 +1,5 @@
-import { DEFAULT_PAGE_SIZE } from "@/helpers/const";
-import { useReducer } from "react";
+import { FIRST_PAGE_SIZE } from "@/helpers/const";
+import { useCallback, useMemo, useReducer } from "react";
 
 const ACTION_TYPES = {
   SET_VALUES_TO_ROOT_LEVEL: "setValuesToRootLevel",
@@ -18,14 +18,16 @@ const reducer = (state, action) => {
 };
 
 const useInfinityScroll = () => {
-  const [state, dispatch] = useReducer(reducer, {
+  const [{ list, ...rest }, dispatch] = useReducer(reducer, {
     page: 0,
-    size: DEFAULT_PAGE_SIZE,
+    size: FIRST_PAGE_SIZE,
     next: null,
     total: null,
     count: null,
-    list: null,
+    list: {},
   });
+
+  const array = useMemo(() => Object.values(list), [list]);
 
   const setPage = (newPage) =>
     dispatch({
@@ -39,23 +41,27 @@ const useInfinityScroll = () => {
       payload: { size: newSize },
     });
 
-  const appendToList = (newItems) => {
-    dispatch({
-      type: ACTION_TYPES.SET_VALUES_TO_ROOT_LEVEL,
-      payload: {
-        list: {
-          ...state.list,
-          ...newItems.reduce((acc, cur) => ({ ...acc, [cur.wordId]: cur }), []),
+  const appendToList = useCallback(
+    (newItems, key) => {
+      dispatch({
+        type: ACTION_TYPES.SET_VALUES_TO_ROOT_LEVEL,
+        payload: {
+          list: {
+            ...list,
+            ...newItems.reduce((acc, cur) => ({ ...acc, [cur[key]]: cur }), []),
+          },
         },
-      },
-    });
-  };
+      });
+    },
+    [list]
+  );
 
   return {
     setSize,
     setPage,
     appendToList,
-    ...state,
+    array,
+    ...rest,
   };
 };
 

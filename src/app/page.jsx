@@ -7,12 +7,15 @@ import { Box } from "@mui/material";
 import ContributeButton from "./_components/ContributeButton";
 import { fetchWords } from "@/actions/fetch-words";
 import LoadMoreWordsClient from "@/components/LoadMoreWords/LoadMoreWords.client";
+import { FIRST_PAGE_SIZE } from "@/helpers/const";
+import WordTagList from "@/components/server-side/WordTagList/WordTagList.server";
+import { Suspense } from "react";
 
 export default async function Home() {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["words", { page: 0 }],
+    queryKey: ["words", { page: 0, size: FIRST_PAGE_SIZE }],
     queryFn: fetchWords,
     staleTime: Infinity,
   });
@@ -22,6 +25,12 @@ export default async function Home() {
       <Box my={2} display="flex" justifyContent="flex-end">
         <ContributeButton />
       </Box>
+
+      <Suspense fallback={<h3>Getting tags</h3>}>
+        <Box mb={2}>
+          <WordTagList />
+        </Box>
+      </Suspense>
 
       <HydrationBoundary state={dehydrate(queryClient)}>
         <LoadMoreWordsClient />

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Typography, Container, Toolbar, Stack, AppBar } from "@mui/material";
 
-function MainLayoutHeader() {
+async function MainLayoutHeader() {
   return (
     <AppBar color="default" position="absolute">
       <Container

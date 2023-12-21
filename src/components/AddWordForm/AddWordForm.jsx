@@ -80,7 +80,6 @@ const AddWordForm = () => {
 
       const response = await mutateAsync(prepareWordDto({ ...rest, dataUrl }));
 
-      console.log(response);
     }
   });
   const handleCancel = () => {

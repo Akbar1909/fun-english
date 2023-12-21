@@ -16,7 +16,7 @@ export default function WordCard({
     <Box>
       <Box
         sx={{
-          backgroundColor: color,
+          backgroundColor: color || "blue",
           borderTopRightRadius: WORD_CARD_RADIUS,
           borderTopLeftRadius: WORD_CARD_RADIUS,
         }}
@@ -71,7 +71,7 @@ export default function WordCard({
       <Box
         py={1}
         sx={{
-          backgroundColor: color,
+          backgroundColor: color || "blue",
           borderBottomLeftRadius: WORD_CARD_RADIUS,
           borderBottomRightRadius: WORD_CARD_RADIUS,
         }}
