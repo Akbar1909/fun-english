@@ -12,7 +12,7 @@ const AddWord = async () => {
   const session = await getServerSession();
 
   if (!session || !session.user) {
-    redirect("/api/auth/signin");
+    redirect("/?signin=false");
   }
 
   return (

@@ -29,7 +29,6 @@ export const authOptions = {
           return {
             email: credentials.email,
             token: data.access_token,
-            name: "target",
           };
         } catch (e) {
           return null;
@@ -60,11 +59,6 @@ export const authOptions = {
       }
       return token;
     },
-    // async signIn({ account, user }) {
-    //   console.log("account", { account, user });
-
-    //   return true;
-    // },
   },
 };
 
