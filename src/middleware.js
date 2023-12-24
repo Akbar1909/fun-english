@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 
 const protectedRoutes = ["/content-make/word"];
 
@@ -7,14 +7,12 @@ export default async function middleware(req) {
   const { pathname } = req.nextUrl;
 
   if (pathname.startsWith("/content-make")) {
-    const requestForNextAuth = {
-      headers: {
-        cookie: req.headers.get("cookie"),
-      },
-    };
-    const session = await getSession({ req: requestForNextAuth });
-
-    console.log({ session }, "session mid");
+    // const requestForNextAuth = {
+    //   headers: {
+    //     cookie: req.headers.get("cookie"),
+    //   },
+    // };
+    // const session = await getSession({ req: requestForNextAuth });
 
     // {
     //   session: {
