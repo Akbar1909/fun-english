@@ -1,5 +1,5 @@
 "use client";
-import { useSuspenseQuery, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Box } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 import { fetchWords } from "@/actions/fetch-words";

@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { Typography, Container, Toolbar, Stack, AppBar } from "@mui/material";
+import { Typography, Container, Toolbar, AppBar } from "@mui/material";
+import LogoutButton from "./LogoutButton.client";
+import LoginButton from "./LoginButton.client";
 
 async function MainLayoutHeader() {
   return (
@@ -12,6 +14,9 @@ async function MainLayoutHeader() {
           <Typography color={"primary.light"} variant="h1" noWrap component="a">
             <Link href="/">English Metro🚈</Link>
           </Typography>
+
+          <LogoutButton />
+          <LoginButton />
         </Toolbar>
       </Container>
     </AppBar>

@@ -23,10 +23,8 @@ const WordCardHoverWrapper = ({ children, color }) => {
   const { push, savedWordIds, incrementCount } = useFixedFolderStore();
 
   const handleSave = () => {
-    const { bottom, right, x, y, width, height, top, left } =
+    const { bottom, x, width, height } =
       rootRef.current.getBoundingClientRect();
-
-    console.log({ bottom, right, top, left, height });
 
     push({
       wordElement: (

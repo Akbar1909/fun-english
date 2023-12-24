@@ -39,7 +39,7 @@ const EmptyFolderView = () => {
           },
         }}
       >
-        <Typography variant="h3">{count}</Typography>
+        <Typography variant="h1">{count}</Typography>
       </Box>
       {savedWordElements.map((savedWordElement) =>
         createPortal(savedWordElement, document.body)

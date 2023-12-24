@@ -1,12 +1,20 @@
 import { AddWordForm } from "@/components/AddWordForm";
 import Head from "next/head";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
 import { Typography, Grid, Box } from "@mui/material";
 import { AddWordTagForm } from "@/components/AddWordTagForm";
 import { WordTagList } from "@/components/WordTagList";
 import { Suspense } from "react";
 import ClientWrapper from "@/components/ClientWrapper";
 
-const page = async () => {
+const AddWord = async () => {
+  const session = await getServerSession();
+
+  if (!session || !session.user) {
+    redirect("/api/auth/signin");
+  }
+
   return (
     <>
       <Head>
@@ -45,4 +53,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default AddWord;

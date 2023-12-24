@@ -1,4 +1,6 @@
 import axios from "axios";
+import { getSession } from "next-auth/react";
+
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
 const isServer = false;
 const request = axios.create({
@@ -17,13 +19,15 @@ request.interceptors.request.use(async (config) => {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
   } else {
-    const token = document.cookie.replace(
-      /(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/,
-      "$1"
-    );
+    const requestForNextAuth = {
+      headers: {
+        cookie: document.cookie,
+      },
+    };
+    const session = await getSession({ req: requestForNextAuth });
 
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+    if (session?.accessToken) {
+      config.headers["Authorization"] = `Bearer ${session?.accessToken}`;
     }
   }
 

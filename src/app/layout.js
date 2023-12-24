@@ -6,18 +6,20 @@ import "@fontsource/roboto/700.css";
 import "react-toastify/dist/ReactToastify.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
-import { AllProviders } from "@/providers";
+import { AllProviders } from "@/providers/AllProviders";
 import MainLayoutHeader from "@/components/MainLayoutHeader/MainLayoutHeader.server";
 import { Box, Container } from "@mui/material";
 import EmptyFolderView from "@/components/EmptyFolderView";
+import AuthChecker from "@/components/AuthChecker/AuthChecker";
 
 config.autoAddCss = false;
+
 export const metadata = {
   title: "English Ambulance",
   description: "Created by Someone",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
   return (
     <html lang="en" className="light">
       <body>
@@ -31,6 +33,7 @@ export default function RootLayout({ children }) {
             }}
           >
             <MainLayoutHeader />
+            <AuthChecker />
             <Box
               sx={{
                 my: { xs: 8, sm: 9 },
@@ -40,8 +43,8 @@ export default function RootLayout({ children }) {
             </Box>
           </Container>
           <footer>Footer</footer>
-        </AllProviders>
-        <EmptyFolderView />
+          <EmptyFolderView />
+        </AllProviders>{" "}
       </body>
     </html>
   );
