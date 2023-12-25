@@ -8,7 +8,6 @@ const EmptyFolderView = () => {
 
   return (
     <>
-      (
       <Box
         display="flex"
         alignItems="center"

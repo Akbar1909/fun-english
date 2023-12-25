@@ -4,7 +4,7 @@ import { Button } from "@mui/material";
 import { signOut, useSession } from "next-auth/react";
 
 const LogoutButton = () => {
-  const { status, data } = useSession();
+  const { status } = useSession();
 
   if (status !== "authenticated") {
     return null;

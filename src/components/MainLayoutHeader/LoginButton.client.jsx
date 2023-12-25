@@ -1,7 +1,6 @@
 "use client";
-import { useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button, Stack } from "@mui/material";
 import { useUIStore } from "@/clientStore/ui";
 import AnimatedModal from "../client-side/AnimatedModal.client";
@@ -12,8 +11,6 @@ const LoginButton = () => {
   const pathname = usePathname();
   const { status, data, ...rest } = useSession();
   const { toggleAuthModal, authModalOpen } = useUIStore();
-
-  console.log({ status, data });
 
   if (status === "authenticated") {
     return null;

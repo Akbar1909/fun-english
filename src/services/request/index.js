@@ -19,16 +19,15 @@ request.interceptors.request.use(async (config) => {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
   } else {
-    const requestForNextAuth = {
-      headers: {
-        cookie: document.cookie,
-      },
-    };
-    const session = await getSession({ req: requestForNextAuth });
-
-    if (session?.accessToken) {
-      config.headers["Authorization"] = `Bearer ${session?.accessToken}`;
-    }
+    // const requestForNextAuth = {
+    //   headers: {
+    //     cookie: document.cookie,
+    //   },
+    // };
+    // const session = await getSession({ req: requestForNextAuth });
+    // if (session?.accessToken) {
+    //   config.headers["Authorization"] = `Bearer ${session?.accessToken}`;
+    // }
   }
 
   return config;
