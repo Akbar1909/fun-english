@@ -36,10 +36,6 @@ export default async function Home() {
         </Box>
       </Suspense>
 
-      <Typography mb={1} variant="h2">
-        Created by me
-      </Typography>
-
       <HydrationBoundary state={dehydrate(queryClient)}>
         <LoadMoreWordsClient />
       </HydrationBoundary>
