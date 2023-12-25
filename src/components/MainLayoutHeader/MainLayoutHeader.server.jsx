@@ -15,8 +15,8 @@ async function MainLayoutHeader() {
             <Link href="/">English Metro🚈</Link>
           </Typography>
 
-          <LogoutButton />
-          <LoginButton />
+          {/* <LogoutButton /> */}
+          {/* <LoginButton /> */}
         </Toolbar>
       </Container>
     </AppBar>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";

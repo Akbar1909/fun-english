@@ -10,7 +10,6 @@ import LoadMoreWordsClient from "@/components/LoadMoreWords/LoadMoreWords.client
 import { FIRST_PAGE_SIZE } from "@/helpers/const";
 import WordTagList from "@/components/server-side/WordTagList/WordTagList.server";
 import { Suspense } from "react";
-import { useSession } from "next-auth/react";
 
 export default async function Home() {
   const queryClient = new QueryClient();
