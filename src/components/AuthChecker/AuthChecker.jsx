@@ -6,17 +6,16 @@ import { useSession } from "next-auth/react";
 import { useUIStore } from "@/clientStore/ui";
 
 const AuthChecker = () => {
-  const { status } = useSession();
   const { toggleAuthModal } = useUIStore();
   const searchParams = useSearchParams();
 
   const notSignin = searchParams.has("signin");
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (notSignin) {
       toggleAuthModal();
     }
-  }, [status]);
+  }, [notSignin]);
 
   useEffect(() => {
     if (notSignin) {
