@@ -11,6 +11,7 @@ import MainLayoutHeader from "@/components/MainLayoutHeader/MainLayoutHeader.ser
 import { Box, Container } from "@mui/material";
 import EmptyFolderView from "@/components/EmptyFolderView";
 import AuthChecker from "@/components/AuthChecker/AuthChecker";
+import { Suspense } from "react";
 
 config.autoAddCss = false;
 
@@ -32,7 +33,9 @@ export default async function RootLayout({ children }) {
               minHeight: "100vh",
             }}
           >
-            <MainLayoutHeader />
+            <Suspense fallback={<div>loading...</div>}>
+              <MainLayoutHeader />
+            </Suspense>
             <AuthChecker />
             <Box
               sx={{
