@@ -11,9 +11,9 @@ import ClientWrapper from "@/components/ClientWrapper";
 const AddWord = async () => {
   const session = await getServerSession();
 
-  if (!session || !session.user) {
-    redirect("/?signin=false");
-  }
+  // if (!session || !session.user) {
+  //   redirect("/?signin=false");
+  // }
 
   return (
     <>
