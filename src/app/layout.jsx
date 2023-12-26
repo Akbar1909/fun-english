@@ -24,30 +24,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className="light">
       <body>
-        <AllProviders>
-          <Container
-            maxWidth="auto"
-            sx={{
-              backgroundColor: "common.white",
-              height: "auto",
-              minHeight: "100vh",
-            }}
-          >
-            <Suspense fallback={<div>loading...</div>}>
-              <MainLayoutHeader />
-            </Suspense>
-            <AuthChecker />
-            <Box
-              sx={{
-                my: { xs: 8, sm: 9 },
-              }}
-            >
-              {children}
-            </Box>
-          </Container>
-          <footer>Footer</footer>
-          <EmptyFolderView />
-        </AllProviders>{" "}
+        <AllProviders>{children}</AllProviders>
       </body>
     </html>
   );
