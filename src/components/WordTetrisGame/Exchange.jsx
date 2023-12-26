@@ -59,12 +59,8 @@ const Exchange = () => {
     );
   }, [data, isSuccess]);
 
-  const handleClick = (e, type) => {
+  const firstBoxHandleClick = (e) => {
     let clickedElement = e.target;
-
-    const receiverSetter = type === "first" ? setSecondBox : setFirstBox;
-    const senderSetter = type === "first" ? setFirstBox : setSecondBox;
-    const currentBox = type === "first" ? firstBox : secondBox;
 
     while (
       clickedElement &&
@@ -76,7 +72,7 @@ const Exchange = () => {
     const id = parseInt(clickedElement.getAttribute("data-id"), 10);
     const color = clickedElement.getAttribute("data-color");
 
-    const wordTagEl = currentBox.get(id);
+    const wordTagEl = firstBox.get(id);
 
     const oldClientRect = document
       .getElementById(`word-tag-${id}`)
@@ -94,7 +90,7 @@ const Exchange = () => {
     );
 
     flushSync(() => {
-      senderSetter(
+      setFirstBox(
         (map) =>
           new Map(
             map.set(
@@ -110,7 +106,7 @@ const Exchange = () => {
             )
           )
       );
-      receiverSetter((map) => new Map(map.set(id, el)));
+      setSecondBox((map) => new Map(map.set(id, el)));
     });
 
     const currentChild = document.getElementById(`word-tag-${id}`);
@@ -146,6 +142,8 @@ const Exchange = () => {
     setAnimatedEl(animatedEl);
   };
 
+  const secondBoxHandleClick = (e) => {};
+
   return (
     <>
       <Stack
@@ -159,7 +157,7 @@ const Exchange = () => {
           <Stack direction="column" rowGap="20px">
             <Box
               ref={firstBoxRef}
-              onClick={(e) => handleClick(e, "first")}
+              onClick={firstBoxHandleClick}
               display="flex"
               flexDirection="row"
               gap="10px"
@@ -171,7 +169,7 @@ const Exchange = () => {
 
             <Box
               ref={secondBoxRef}
-              onClick={(e) => handleClick(e, "second")}
+              onClick={secondBoxHandleClick}
               id="word-tetris-board"
               display="flex"
               flexDirection="row"
