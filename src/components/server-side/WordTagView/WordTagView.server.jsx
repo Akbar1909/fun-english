@@ -6,7 +6,7 @@ const styles = {
     minWidth: "180px",
     height: 40,
     py: "10px",
-    borderRadius: "6px",
+    borderRadius: "3px",
     color: "common.white",
   },
   text: {},

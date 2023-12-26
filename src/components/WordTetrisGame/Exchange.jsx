@@ -18,15 +18,15 @@ const styles = {
     px: "8px",
     flex: 1,
     minWidth: "120px",
+    cursor: "pointer",
   },
 };
 
 const Exchange = () => {
-  const clickedElRef = useRef(null);
   const firstBoxRef = useRef(null);
   const secondBoxRef = useRef(null);
-  const [firstBox, setFirstBox] = useState({});
-  const [secondBox, setSecondBox] = useState({});
+  const [firstBox, setFirstBox] = useState(new Map());
+  const [secondBox, setSecondBox] = useState(new Map());
   const [animatedEl, setAnimatedEl] = useState(null);
 
   const { data, isLoading, isSuccess, isError } = useQuery({
@@ -41,11 +41,110 @@ const Exchange = () => {
     }
 
     setFirstBox(
-      data?.data.reduce((acc, cur) => ({ ...acc, [cur.wordTagId]: cur }), {})
+      data?.data.reduce(
+        (acc, cur) =>
+          acc.set(
+            cur.wordTagId,
+            <Box>
+              <WordTagView
+                data-id={cur.wordTagId}
+                data-color={cur.color}
+                sx={styles.wordTag}
+                {...cur}
+              />
+            </Box>
+          ),
+        new Map()
+      )
     );
   }, [data, isSuccess]);
 
-  console.log(secondBox);
+  const handleClick = (e, type) => {
+    let clickedElement = e.target;
+
+    const receiverSetter = type === "first" ? setSecondBox : setFirstBox;
+    const senderSetter = type === "first" ? setFirstBox : setSecondBox;
+    const currentBox = type === "first" ? firstBox : secondBox;
+
+    while (
+      clickedElement &&
+      !clickedElement.classList.contains("word-tag-view")
+    ) {
+      clickedElement = clickedElement.parentNode;
+    }
+
+    const id = parseInt(clickedElement.getAttribute("data-id"), 10);
+    const color = clickedElement.getAttribute("data-color");
+
+    const wordTagEl = currentBox.get(id);
+
+    const oldClientRect = document
+      .getElementById(`word-tag-${id}`)
+      .getBoundingClientRect();
+
+    const el = (
+      <Box
+        data-id={id}
+        data-color={color}
+        id={`word-tag-${id}`}
+        style={{ opacity: 0 }}
+      >
+        {wordTagEl}
+      </Box>
+    );
+
+    flushSync(() => {
+      senderSetter(
+        (map) =>
+          new Map(
+            map.set(
+              id,
+              <Box
+                sx={{
+                  width: oldClientRect.width,
+                  height: oldClientRect.height,
+                  border: "1px dashed",
+                  borderColor: color,
+                }}
+              />
+            )
+          )
+      );
+      receiverSetter((map) => new Map(map.set(id, el)));
+    });
+
+    const currentChild = document.getElementById(`word-tag-${id}`);
+
+    const newClientRect = currentChild.getBoundingClientRect();
+
+    const animatedEl = (
+      <MotionDiv
+        style={{
+          position: "fixed",
+          left: `${oldClientRect.left}px`,
+          top: `${oldClientRect.top}`,
+          zIndex: 20,
+          width: `${oldClientRect.width}px`,
+          height: `${oldClientRect.height}px`,
+        }}
+        animate={{
+          left: `${newClientRect.left}px`,
+          top: `${newClientRect.top}px`,
+        }}
+        onAnimationComplete={() => {
+          const el = document.getElementById(`word-tag-${id}`);
+
+          el.style.opacity = 1;
+
+          setAnimatedEl(null);
+        }}
+      >
+        {wordTagEl}
+      </MotionDiv>
+    );
+
+    setAnimatedEl(animatedEl);
+  };
 
   return (
     <>
@@ -60,96 +159,19 @@ const Exchange = () => {
           <Stack direction="column" rowGap="20px">
             <Box
               ref={firstBoxRef}
-              onClick={(e) => {
-                let clickedElement = e.target;
-
-                while (
-                  clickedElement &&
-                  !clickedElement.classList.contains("word-tag-view")
-                ) {
-                  clickedElement = clickedElement.parentNode;
-                }
-
-                const id = clickedElement.getAttribute("data-id");
-
-                const wordTag = firstBox[id];
-
-                const wordTagEl = (
-                  <WordTagView data-id={id} sx={styles.wordTag} {...wordTag} />
-                );
-
-                const oldClientRect = document
-                  .getElementById(`word-tag-${id}`)
-                  .getBoundingClientRect();
-
-                const el = (
-                  <div id={`clicked-${id}`} style={{ opacity: 0 }}>
-                    {wordTagEl}
-                  </div>
-                );
-                clickedElRef.current = el;
-
-                flushSync(() => {
-                  setFirstBox((prev) => ({ ...prev, [id]: null }));
-                  setSecondBox((prev) => ({
-                    ...prev,
-                    [id]: el,
-                  }));
-                });
-
-                const lastChild = secondBoxRef.current.lastChild;
-
-                const newClientRect = lastChild.getBoundingClientRect();
-
-                const animatedEl = (
-                  <MotionDiv
-                    style={{
-                      position: "fixed",
-                      right: `${oldClientRect.right}px`,
-                      top: `${oldClientRect.top}`,
-                      zIndex: 20,
-                      width: `${oldClientRect.width}px`,
-                      height: `${oldClientRect.height}px`,
-                    }}
-                    animate={{
-                      top: `${newClientRect.top}px`,
-                      left: `${newClientRect.left}px`,
-                    }}
-                    onAnimationComplete={() => {
-                      document.getElementById(
-                        `clicked-${id}`
-                      ).style.opacity = 1;
-
-                      setAnimatedEl(null);
-                    }}
-                  >
-                    {wordTagEl}
-                  </MotionDiv>
-                );
-
-                setAnimatedEl(animatedEl);
-              }}
+              onClick={(e) => handleClick(e, "first")}
               display="flex"
               flexDirection="row"
               gap="10px"
               flexWrap="wrap"
               sx={[styles.backlog, { height: "45vh" }]}
             >
-              {Object.values(firstBox)
-                .filter((wordTag) => wordTag)
-                .map((wordTag, i) => (
-                  <Box key={i}>
-                    <WordTagView
-                      data-id={wordTag.wordTagId}
-                      sx={styles.wordTag}
-                      {...wordTag}
-                    />
-                  </Box>
-                ))}
+              {Array.from(firstBox.values())}
             </Box>
 
             <Box
               ref={secondBoxRef}
+              onClick={(e) => handleClick(e, "second")}
               id="word-tetris-board"
               display="flex"
               flexDirection="row"
@@ -157,7 +179,7 @@ const Exchange = () => {
               flexWrap="wrap"
               sx={[styles.backlog, { height: "45vh" }]}
             >
-              {Object.values(secondBox)}
+              {Array.from(secondBox.values())}
             </Box>
           </Stack>
         )}
