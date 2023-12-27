@@ -18,7 +18,7 @@ const ContributeButton = () => {
   };
 
   return (
-    <Link href="/content-make/word">
+    <Link href="/common/content-make/word">
       <Button
         ref={buttonRef}
         variant="outlined"
