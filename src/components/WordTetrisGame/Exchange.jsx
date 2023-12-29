@@ -31,8 +31,7 @@ const styles = {
 };
 
 const Exchange = () => {
-  const [firstBoxRef, firstBoxAnimate] = useAnimate();
-  const [secondBoxRef, secondBoxAnimate] = useAnimate();
+  const [rootRef, rootRefAnimate] = useAnimate();
   const [gameBoardTetrisRef, setGameBoardTetrisRef] = useAnimate();
   const gameBoardValues = useRef([]);
   const [firstBox, setFirstBox] = useState(new Map());
@@ -40,8 +39,6 @@ const Exchange = () => {
   const [animatedEl, setAnimatedEl] = useState(new Map());
 
   const wordsState = useWordsByWordTags(gameBoardValues.current);
-
-  console.log({ wordsState }, gameBoardValues.current);
 
   const { data, isLoading, isSuccess, isError } = useQuery({
     queryKey: ["word-tags-count"],
@@ -241,31 +238,27 @@ const Exchange = () => {
     setGameBoardTetrisRef(
       gameBoardTetrisRef.current,
       {
+        display: "block",
         left: 0,
       },
       { duration: 0.5 }
     );
 
-    firstBoxAnimate(
-      firstBoxRef.current,
-      { opacity: 0, transform: "translateX(-500px)" },
-      { duration: 0.5 }
-    );
-    secondBoxAnimate(
-      secondBoxRef.current,
+    rootRefAnimate(
+      rootRef.current,
       { opacity: 0, transform: "translateX(-500px)" },
       { duration: 0.5 }
     );
 
     setTimeout(() => {
-      secondBoxRef.current.remove();
-      firstBoxRef.current.remove();
+      rootRef.current.remove();
     }, 500);
   };
 
   return (
     <>
       <Stack
+        ref={rootRef}
         sx={{ height: "100dvh", backgroundColor: "common.white", py: 1, px: 1 }}
       >
         {isLoading ? (
@@ -274,16 +267,11 @@ const Exchange = () => {
           <h3>Something went wrong</h3>
         ) : (
           <Stack direction="column" rowGap="20px">
-            <Box
-              ref={firstBoxRef}
-              onClick={firstBoxHandleClick}
-              sx={styles.backlog}
-            >
+            <Box onClick={firstBoxHandleClick} sx={styles.backlog}>
               {Array.from(firstBox.values())}
             </Box>
 
             <Box
-              ref={secondBoxRef}
               onClick={secondBoxHandleClick}
               id="word-tetris-board"
               sx={styles.backlog}
@@ -306,14 +294,18 @@ const Exchange = () => {
       <MotionDiv
         ref={gameBoardTetrisRef}
         style={{
+          display: "none",
           position: "absolute",
           left: "101vw",
           width: "100vw",
           height: "100dvh",
-          backgroundColor: "red",
         }}
       >
-        <WordTetrisGameBoard />
+        {wordsState.isSuccess && (
+          <Suspense fallback={<div />}>
+            <WordTetrisGameBoard words={wordsState?.data?.data || []} />
+          </Suspense>
+        )}
       </MotionDiv>
 
       {Array.from(animatedEl.values()).map(
