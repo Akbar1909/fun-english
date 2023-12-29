@@ -3,15 +3,14 @@ import { forwardRef } from "react";
 
 const styles = {
   root: {
-    minWidth: "180px",
     height: 40,
     py: "10px",
+    px: "18px",
     borderRadius: "3px",
     color: "common.white",
   },
   text: {},
   counter: {
-    // position: "absolute",
     bottom: "10px",
     right: "10px",
     width: "27px",
@@ -31,19 +30,27 @@ const WordTagView = forwardRef(
         id={`word-tag-${wordTagId}`}
         {...rest}
         className="word-tag-view"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
         position="relative"
+        height="fit-content"
         sx={[
-          styles.root,
-          { backgroundColor: color || "blue" },
+          {
+            border: "1px solid",
+            borderColor: "transparent",
+            cursor: "pointer",
+          },
           ...(Array.isArray(sx) ? sx : [sx]),
         ]}
       >
-        <Typography variant="h3" sx={{ textTransform: "capitalize" }}>
-          {tag} ({count})
-        </Typography>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          sx={[styles.root, { backgroundColor: color || "blue" }]}
+        >
+          <Typography variant="h3" sx={{ textTransform: "capitalize" }}>
+            {tag} ({count})
+          </Typography>
+        </Box>
       </Box>
     );
   }

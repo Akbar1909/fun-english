@@ -36,3 +36,16 @@ export async function forceWait(wait = 3000) {
     }, wait)
   );
 }
+
+export const getClickedElement = (target) => {
+  let clickedElement = target;
+
+  while (
+    clickedElement &&
+    !clickedElement.classList.contains("word-tag-view")
+  ) {
+    clickedElement = clickedElement.parentNode;
+  }
+
+  return clickedElement;
+};

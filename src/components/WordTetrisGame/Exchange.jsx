@@ -6,6 +6,7 @@ import { Box, Stack, Button } from "@mui/material";
 import { httpGetWordTagsCount } from "@/data/word-tag/word-tag.requests";
 import WordTagView from "../server-side/WordTagView/WordTagView.server";
 import { MotionDiv } from "../client-side/MotionDiv";
+import { getClickedElement } from "@/helpers/common";
 
 const styles = {
   backlog: {
@@ -13,11 +14,14 @@ const styles = {
     border: "1px solid",
     p: 1,
     overflow: "auto",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "6px",
+    height: "45vh",
   },
   wordTag: {
     px: "8px",
     flex: 1,
-    minWidth: "120px",
     cursor: "pointer",
   },
 };
@@ -27,7 +31,7 @@ const Exchange = () => {
   const secondBoxRef = useRef(null);
   const [firstBox, setFirstBox] = useState(new Map());
   const [secondBox, setSecondBox] = useState(new Map());
-  const [animatedEl, setAnimatedEl] = useState(null);
+  const [animatedEl, setAnimatedEl] = useState(new Map());
 
   const { data, isLoading, isSuccess, isError } = useQuery({
     queryKey: ["word-tags-count"],
@@ -45,14 +49,35 @@ const Exchange = () => {
         (acc, cur) =>
           acc.set(
             cur.wordTagId,
-            <Box>
-              <WordTagView
-                data-id={cur.wordTagId}
-                data-color={cur.color}
-                sx={styles.wordTag}
-                {...cur}
-              />
-            </Box>
+            <WordTagView
+              data-id={cur.wordTagId}
+              data-color={cur.color}
+              {...cur}
+              wordTagId={`first-${cur.wordTagId}`}
+            />
+          ),
+        new Map()
+      )
+    );
+    setSecondBox(
+      data?.data.reduce(
+        (acc, cur) =>
+          acc.set(
+            cur.wordTagId,
+            <WordTagView
+              sx={[
+                {
+                  border: "1px dashed",
+                  borderColor: cur.color,
+                  height: "fit-content",
+                },
+                { "&>div": { opacity: 0 } },
+              ]}
+              data-id={cur.wordTagId}
+              data-color={cur.color}
+              {...cur}
+              wordTagId={`second-${cur.wordTagId}`}
+            />
           ),
         new Map()
       )
@@ -60,34 +85,18 @@ const Exchange = () => {
   }, [data, isSuccess]);
 
   const firstBoxHandleClick = (e) => {
-    let clickedElement = e.target;
-
-    while (
-      clickedElement &&
-      !clickedElement.classList.contains("word-tag-view")
-    ) {
-      clickedElement = clickedElement.parentNode;
-    }
+    let clickedElement = getClickedElement(e.target);
 
     const id = parseInt(clickedElement.getAttribute("data-id"), 10);
     const color = clickedElement.getAttribute("data-color");
 
     const wordTagEl = firstBox.get(id);
 
-    const oldClientRect = document
-      .getElementById(`word-tag-${id}`)
+    const originalOptions = document
+      .getElementById(`word-tag-first-${id}`)
       .getBoundingClientRect();
 
-    const el = (
-      <Box
-        data-id={id}
-        data-color={color}
-        id={`word-tag-${id}`}
-        style={{ opacity: 0 }}
-      >
-        {wordTagEl}
-      </Box>
-    );
+    const el = wordTagEl;
 
     flushSync(() => {
       setFirstBox(
@@ -96,9 +105,10 @@ const Exchange = () => {
             map.set(
               id,
               <Box
+                id={`word-tag-first-${id}`}
                 sx={{
-                  width: oldClientRect.width,
-                  height: oldClientRect.height,
+                  width: originalOptions.width,
+                  height: originalOptions.height,
                   border: "1px dashed",
                   borderColor: color,
                 }}
@@ -106,43 +116,109 @@ const Exchange = () => {
             )
           )
       );
-      setSecondBox((map) => new Map(map.set(id, el)));
     });
 
-    const currentChild = document.getElementById(`word-tag-${id}`);
+    const currentChild = document.getElementById(`word-tag-second-${id}`);
 
-    const newClientRect = currentChild.getBoundingClientRect();
+    const targetOptions = currentChild.getBoundingClientRect();
 
     const animatedEl = (
       <MotionDiv
         style={{
           position: "fixed",
-          left: `${oldClientRect.left}px`,
-          top: `${oldClientRect.top}`,
+          left: `${originalOptions.left}px`,
+          top: `${originalOptions.top}`,
           zIndex: 20,
-          width: `${oldClientRect.width}px`,
-          height: `${oldClientRect.height}px`,
+          width: `${originalOptions.width}px`,
+          height: `${originalOptions.height}px`,
         }}
         animate={{
-          left: `${newClientRect.left}px`,
-          top: `${newClientRect.top}px`,
+          left: `${targetOptions.left}px`,
+          top: `${targetOptions.top}px`,
+          transitionEnd: {
+            display: "none",
+          },
+        }}
+        transition={{
+          type: "spring",
+          duration: 0.8,
         }}
         onAnimationComplete={() => {
-          const el = document.getElementById(`word-tag-${id}`);
+          setSecondBox((map) => new Map(map.set(id, el)));
 
-          el.style.opacity = 1;
-
-          setAnimatedEl(null);
+          setAnimatedEl((map) => new Map(map.set(id, null)));
         }}
       >
         {wordTagEl}
       </MotionDiv>
     );
 
-    setAnimatedEl(animatedEl);
+    setAnimatedEl((map) => new Map(map.set(id, animatedEl)));
   };
 
-  const secondBoxHandleClick = (e) => {};
+  const secondBoxHandleClick = (e) => {
+    const clickedElement = getClickedElement(e.target);
+
+    const id = parseInt(clickedElement.getAttribute("data-id"), 10);
+    const color = clickedElement.getAttribute("data-color");
+    clickedElement.style.opacity = 0;
+
+    const originalOptions = clickedElement.getBoundingClientRect();
+    const targetOptions = document
+      .getElementById(`word-tag-first-${id}`)
+      .getBoundingClientRect();
+
+    const currentEl = secondBox.get(id);
+
+    flushSync(() => {
+      setSecondBox(
+        (map) =>
+          new Map(
+            map.set(
+              id,
+              <Box
+                id={`word-tag-second-${id}`}
+                sx={{
+                  width: originalOptions.width,
+                  height: originalOptions.height,
+                  border: "1px dashed",
+                  borderColor: color,
+                }}
+              />
+            )
+          )
+      );
+    });
+
+    const animatedEl = (
+      <MotionDiv
+        style={{
+          position: "fixed",
+          left: `${originalOptions.left}px`,
+          top: `${originalOptions.top}`,
+          zIndex: 20,
+          width: `${originalOptions.width}px`,
+          height: `${originalOptions.height}px`,
+        }}
+        animate={{
+          left: `${targetOptions.left}px`,
+          top: `${targetOptions.top}px`,
+        }}
+        transition={{
+          type: "spring",
+          duration: 1,
+        }}
+        onAnimationComplete={() => {
+          setFirstBox((map) => new Map(map.set(id, currentEl)));
+          setAnimatedEl((map) => new Map(map.set(id, null)));
+        }}
+      >
+        {currentEl}
+      </MotionDiv>
+    );
+
+    setAnimatedEl((map) => new Map(map.set(id, animatedEl)));
+  };
 
   return (
     <>
@@ -150,7 +226,7 @@ const Exchange = () => {
         sx={{ height: "100vh", backgroundColor: "common.white", py: 1, px: 1 }}
       >
         {isLoading ? (
-          <h3>Laoding tags....</h3>
+          <h3>Loading tags....</h3>
         ) : isError ? (
           <h3>Something went wrong</h3>
         ) : (
@@ -158,11 +234,7 @@ const Exchange = () => {
             <Box
               ref={firstBoxRef}
               onClick={firstBoxHandleClick}
-              display="flex"
-              flexDirection="row"
-              gap="10px"
-              flexWrap="wrap"
-              sx={[styles.backlog, { height: "45vh" }]}
+              sx={styles.backlog}
             >
               {Array.from(firstBox.values())}
             </Box>
@@ -171,11 +243,7 @@ const Exchange = () => {
               ref={secondBoxRef}
               onClick={secondBoxHandleClick}
               id="word-tetris-board"
-              display="flex"
-              flexDirection="row"
-              gap="10px"
-              flexWrap="wrap"
-              sx={[styles.backlog, { height: "45vh" }]}
+              sx={styles.backlog}
             >
               {Array.from(secondBox.values())}
             </Box>
@@ -187,7 +255,9 @@ const Exchange = () => {
         </Button>
       </Stack>
 
-      {animatedEl && createPortal(animatedEl, document.body)}
+      {Array.from(animatedEl.values()).map(
+        (an) => an && createPortal(an, document.body)
+      )}
     </>
   );
 };
