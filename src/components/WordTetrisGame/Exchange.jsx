@@ -21,7 +21,7 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     gap: "6px",
-    height: "45vh",
+    height: "45dvh",
   },
   wordTag: {
     px: "8px",
@@ -266,7 +266,7 @@ const Exchange = () => {
   return (
     <>
       <Stack
-        sx={{ height: "100vh", backgroundColor: "common.white", py: 1, px: 1 }}
+        sx={{ height: "100dvh", backgroundColor: "common.white", py: 1, px: 1 }}
       >
         {isLoading ? (
           <h3>Loading tags....</h3>
@@ -309,7 +309,7 @@ const Exchange = () => {
           position: "absolute",
           left: "101vw",
           width: "100vw",
-          height: "100vh",
+          height: "100dvh",
           backgroundColor: "red",
         }}
       >
