@@ -1,12 +1,16 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense, lazy, useMemo } from "react";
 import { flushSync, createPortal } from "react-dom";
+import { useAnimate } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Stack, Button } from "@mui/material";
 import { httpGetWordTagsCount } from "@/data/word-tag/word-tag.requests";
 import WordTagView from "../server-side/WordTagView/WordTagView.server";
 import { MotionDiv } from "../client-side/MotionDiv";
 import { getClickedElement } from "@/helpers/common";
+import useWordsByWordTags from "@/hooks/api/useWordsByWordTags";
+
+const WordTetrisGameBoard = lazy(() => import("./WordTetrisGameBoard"));
 
 const styles = {
   backlog: {
@@ -27,11 +31,17 @@ const styles = {
 };
 
 const Exchange = () => {
-  const firstBoxRef = useRef(null);
-  const secondBoxRef = useRef(null);
+  const [firstBoxRef, firstBoxAnimate] = useAnimate();
+  const [secondBoxRef, secondBoxAnimate] = useAnimate();
+  const [gameBoardTetrisRef, setGameBoardTetrisRef] = useAnimate();
+  const gameBoardValues = useRef([]);
   const [firstBox, setFirstBox] = useState(new Map());
   const [secondBox, setSecondBox] = useState(new Map());
   const [animatedEl, setAnimatedEl] = useState(new Map());
+
+  const wordsState = useWordsByWordTags(gameBoardValues.current);
+
+  console.log({ wordsState }, gameBoardValues.current);
 
   const { data, isLoading, isSuccess, isError } = useQuery({
     queryKey: ["word-tags-count"],
@@ -146,6 +156,8 @@ const Exchange = () => {
         onAnimationComplete={() => {
           setSecondBox((map) => new Map(map.set(id, el)));
 
+          gameBoardValues.current.push(id);
+
           setAnimatedEl((map) => new Map(map.set(id, null)));
         }}
       >
@@ -209,6 +221,9 @@ const Exchange = () => {
           duration: 1,
         }}
         onAnimationComplete={() => {
+          gameBoardValues.current = gameBoardValues.current.filter(
+            (item) => item !== id
+          );
           setFirstBox((map) => new Map(map.set(id, currentEl)));
           setAnimatedEl((map) => new Map(map.set(id, null)));
         }}
@@ -218,6 +233,34 @@ const Exchange = () => {
     );
 
     setAnimatedEl((map) => new Map(map.set(id, animatedEl)));
+  };
+
+  const handleStart = async () => {
+    await wordsState.refetch();
+
+    setGameBoardTetrisRef(
+      gameBoardTetrisRef.current,
+      {
+        left: 0,
+      },
+      { duration: 0.5 }
+    );
+
+    firstBoxAnimate(
+      firstBoxRef.current,
+      { opacity: 0, transform: "translateX(-500px)" },
+      { duration: 0.5 }
+    );
+    secondBoxAnimate(
+      secondBoxRef.current,
+      { opacity: 0, transform: "translateX(-500px)" },
+      { duration: 0.5 }
+    );
+
+    setTimeout(() => {
+      secondBoxRef.current.remove();
+      firstBoxRef.current.remove();
+    }, 500);
   };
 
   return (
@@ -250,10 +293,28 @@ const Exchange = () => {
           </Stack>
         )}
 
-        <Button size="large" sx={{ mt: "auto" }} variant="contained">
-          Start Game
+        <Button
+          onClick={handleStart}
+          size="large"
+          sx={{ mt: "auto" }}
+          variant="contained"
+        >
+          {wordsState.isLoading ? "Starting..." : "Start"}
         </Button>
       </Stack>
+
+      <MotionDiv
+        ref={gameBoardTetrisRef}
+        style={{
+          position: "absolute",
+          left: "101vw",
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "red",
+        }}
+      >
+        <WordTetrisGameBoard />
+      </MotionDiv>
 
       {Array.from(animatedEl.values()).map(
         (an) => an && createPortal(an, document.body)
