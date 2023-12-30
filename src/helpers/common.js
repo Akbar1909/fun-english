@@ -37,15 +37,33 @@ export async function forceWait(wait = 3000) {
   );
 }
 
-export const getClickedElement = (target) => {
+export const getClickedElement = (target, className = "word-tag-view") => {
   let clickedElement = target;
 
-  while (
-    clickedElement &&
-    !clickedElement.classList.contains("word-tag-view")
-  ) {
+  while (clickedElement && !clickedElement.classList.contains(className)) {
     clickedElement = clickedElement.parentNode;
   }
 
   return clickedElement;
+};
+
+export const shuffle = (str) => {
+  let a = str.split(""),
+    n = a.length;
+
+  for (let i = n - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    let tmp = a[i];
+    a[i] = a[j];
+    a[j] = tmp;
+  }
+  return a.join("");
+};
+
+export const replaceAt = (word, replacement, index) => {
+  return (
+    word.substring(0, index) +
+    replacement +
+    word.substring(index + replacement.length)
+  );
 };

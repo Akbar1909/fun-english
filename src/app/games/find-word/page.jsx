@@ -1,7 +1,6 @@
 import Exchange from "@/components/Exchange/Exchange";
-import { Box, Typography } from "@mui/material";
 
-const WordTetrisPage = () => {
+const FindWordPage = () => {
   return (
     <main className="h-full flex flex-col">
       <Exchange />
@@ -9,4 +8,4 @@ const WordTetrisPage = () => {
   );
 };
 
-export default WordTetrisPage;
+export default FindWordPage;

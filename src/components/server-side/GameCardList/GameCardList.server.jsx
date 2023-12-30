@@ -7,10 +7,10 @@ const GameCardList = () => {
   const games = [
     {
       id: 1,
-      title: "Word Tetris",
+      title: "Find Word",
       image: "",
       color: "primary.main",
-      href: "/games/word-tetris",
+      href: "/games/find-word",
     },
   ];
 

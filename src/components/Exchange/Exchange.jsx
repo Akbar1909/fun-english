@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef, Suspense, lazy, useMemo } from "react";
+import { useEffect, useState, useRef, Suspense, lazy } from "react";
 import { flushSync, createPortal } from "react-dom";
 import { useAnimate } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -10,7 +10,9 @@ import { MotionDiv } from "../client-side/MotionDiv";
 import { getClickedElement } from "@/helpers/common";
 import useWordsByWordTags from "@/hooks/api/useWordsByWordTags";
 
-const WordTetrisGameBoard = lazy(() => import("./WordTetrisGameBoard"));
+const FindWordGameBoard = lazy(() =>
+  import("../FindWordGame/FindWordGameBoard")
+);
 
 const styles = {
   backlog: {
@@ -146,10 +148,6 @@ const Exchange = () => {
             display: "none",
           },
         }}
-        transition={{
-          type: "spring",
-          duration: 0.8,
-        }}
         onAnimationComplete={() => {
           setSecondBox((map) => new Map(map.set(id, el)));
 
@@ -238,7 +236,8 @@ const Exchange = () => {
     setGameBoardTetrisRef(
       gameBoardTetrisRef.current,
       {
-        display: "block",
+        display: "flex",
+        justifyContent: "center",
         left: 0,
       },
       { duration: 0.5 }
@@ -303,7 +302,7 @@ const Exchange = () => {
       >
         {wordsState.isSuccess && (
           <Suspense fallback={<div />}>
-            <WordTetrisGameBoard words={wordsState?.data?.data || []} />
+            <FindWordGameBoard words={wordsState?.data?.data || []} />
           </Suspense>
         )}
       </MotionDiv>

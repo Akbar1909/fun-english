@@ -7,11 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { AllProviders } from "@/providers/AllProviders";
-import MainLayoutHeader from "@/components/MainLayoutHeader/MainLayoutHeader.server";
-import { Box, Container } from "@mui/material";
-import EmptyFolderView from "@/components/EmptyFolderView";
-import AuthChecker from "@/components/AuthChecker/AuthChecker";
-import { Suspense } from "react";
 
 config.autoAddCss = false;
 
