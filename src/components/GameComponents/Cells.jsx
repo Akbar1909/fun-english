@@ -7,7 +7,7 @@ const Cells = ({
   className,
   pointer = true,
   inVisibleIndexes,
-  correct,
+  answerStatus,
 }) => {
   return (
     <Stack direction="row" flexWrap="wrap" justifyContent="center">
@@ -19,8 +19,8 @@ const Cells = ({
           className={className}
           prefixId={prefixId}
           key={i}
-          char={char}
-          correct={correct}
+          char={char.toUpperCase()}
+          answerStatus={answerStatus}
         />
       ))}
     </Stack>

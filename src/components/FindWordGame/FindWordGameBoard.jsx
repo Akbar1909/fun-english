@@ -1,5 +1,5 @@
-import { Stack, Box, IconButton, Typography } from "@mui/material";
-import { useState } from "react";
+import { Stack, Box, IconButton, Typography, Button } from "@mui/material";
+import { useState, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -31,10 +31,6 @@ const FindWordGameBoard = ({ words }) => {
     }
 
     setIndex((preIndex) => preIndex + 1);
-  };
-
-  const handlePrev = () => {
-    setIndex((preIndex) => preIndex - 1);
   };
 
   return (
@@ -72,9 +68,13 @@ const FindWordGameBoard = ({ words }) => {
         justifyContent="space-between"
         sx={{ pt: 1 }}
       >
-        <Box></Box>
-        <Typography variant="h2">{index + 1}</Typography>
-        <Typography></Typography>
+        <Box sx={{ flex: 1 }}></Box>
+        <Typography sx={{ flex: 1 }} variant="h2">
+          {index + 1}.
+        </Typography>
+        <Button onClick={handleNext} variant="text">
+          Skip
+        </Button>
       </Stack>
 
       <FindWordGameWidget

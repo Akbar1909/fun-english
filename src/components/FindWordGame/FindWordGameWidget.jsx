@@ -1,26 +1,34 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { useAnimation } from "framer-motion";
 import Image from "next/image";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import Cells from "@/components/GameComponents/Cells";
-import { getClickedElement, replaceAt, shuffle } from "@/helpers/common";
+import {
+  compareCaseInsensitive,
+  getClickedElement,
+  replaceAt,
+  shuffle,
+} from "@/helpers/common";
 import { MotionDiv } from "../client-side/MotionDiv";
 
-const FindWordGameWidget = ({
-  word,
-  description,
-  media,
-  index,
-  handleNext,
-}) => {
+const FindWordGameWidget = ({ word, description, media, handleNext }) => {
   const [animatedEls, setAnimatedEls] = useState(new Map());
   const [input, setInput] = useState(() => " ".repeat(word.length));
   const [shuffledWord, setShuffledWord] = useState(() => shuffle(word));
   const [history, setHistory] = useState([]);
   const [firstBox, setFirstBox] = useState([]);
   const [secondBox, setSecondBox] = useState([]);
-  const [correct, setCorrect] = useState(false);
+  const [answerStatus, setAnswerStatus] = useState("initial");
+
+  const cleanInput = useMemo(
+    () =>
+      input
+        .split("")
+        .filter((char) => char.trim())
+        .join(""),
+    [input]
+  );
 
   const controls = useAnimation();
 
@@ -141,21 +149,50 @@ const FindWordGameWidget = ({
   };
 
   useEffect(() => {
-    if (input === word && firstBox.length === 0 && secondBox.length === 0) {
-      setCorrect(true);
+    if (
+      compareCaseInsensitive(input, word) &&
+      firstBox.length === 0 &&
+      secondBox.length === 0
+    ) {
+      setAnswerStatus("correct");
       setTimeout(() => handleNext(), input.length * 0.05 * 1000 + 500);
+
+      return;
     }
-  }, [input, word, firstBox, secondBox, controls]);
+
+    if (
+      cleanInput.length === word.length &&
+      firstBox.length === 0 &&
+      secondBox.length === 0
+    ) {
+      setAnswerStatus("error");
+
+      return;
+    }
+    setAnswerStatus("initial");
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cleanInput, input, word, firstBox, secondBox, controls]);
 
   return (
     <>
-      <Box sx={{ flex: 1, position: "relative" }}>
+      <MotionDiv
+        style={{
+          flex: 1,
+          position: "relative",
+          opacity: 0,
+          left: "100%",
+          scaleZ: 0,
+        }}
+        transition={{ duration: 0.5 }}
+        animate={{ opacity: 1, left: 0, scaleZ: 1 }}
+      >
         <Stack direction="row" alignItems="center" mb={3}>
           <div dangerouslySetInnerHTML={{ __html: description }} />
         </Stack>
         <Image
           className="text-center"
-          style={{ margin: "auto" }}
+          style={{ margin: "auto", width: "100%", borderRadius: "4px" }}
           width={300}
           height={300}
           src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${media.filename}`}
@@ -171,7 +208,7 @@ const FindWordGameWidget = ({
             className="first"
             prefixId="first"
             word={input}
-            correct={correct}
+            answerStatus={answerStatus}
           />
         </Box>
         <Box
@@ -191,7 +228,7 @@ const FindWordGameWidget = ({
             word={shuffledWord}
           />
         </Box>
-      </Box>
+      </MotionDiv>
 
       {Array.from(animatedEls.values()).map(
         (an) => an && createPortal(an, document.body)

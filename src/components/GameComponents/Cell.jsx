@@ -3,24 +3,31 @@ import { MotionDiv } from "../client-side/MotionDiv";
 
 const Cell = ({
   char,
-  size = 40,
+  size = 44,
   prefixId,
   className,
   index,
   pointer,
   hiddenContent,
-  correct,
+  answerStatus,
 }) => {
   const theme = useTheme();
+
+  const correct = answerStatus === "correct";
+  const error = answerStatus === "error";
 
   const variants = {
     success: {
       backgroundColor: theme.palette.success.main,
-      color: "white",
+      color: theme.palette.common.white,
       transform: "scale(1.05)",
     },
     initial: {
-      backgroundColor: "white",
+      backgroundColor: theme.palette.common.white,
+    },
+    error: {
+      backgroundColor: theme.palette.error.main,
+      color: theme.palette.common.white,
     },
   };
 
@@ -31,8 +38,9 @@ const Cell = ({
       className={`char-view ${className}`}
       data-char={char}
       variants={variants}
-      animate={correct ? "success" : "initial"}
+      animate={correct ? "success" : error ? "error" : "initial"}
       transition={{ delay: index * 0.05 }}
+      whileTap={{ scale: 1.2, transform: "translate(2px,2px)", transition: 1 }}
       style={{
         width: `${size}px`,
         height: `${size}px`,
@@ -47,7 +55,7 @@ const Cell = ({
         ...(pointer && { cursor: "pointer" }),
       }}
     >
-      {!hiddenContent && <Typography variant="h6">{char}</Typography>}
+      {!hiddenContent && <Typography variant="h3">{char}</Typography>}
     </MotionDiv>
   );
 };
