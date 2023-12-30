@@ -20,7 +20,7 @@ const Cell = ({
     success: {
       backgroundColor: theme.palette.success.main,
       color: theme.palette.common.white,
-      transform: "scale(1.05)",
+      transform: "scale(1)",
     },
     initial: {
       backgroundColor: theme.palette.common.white,

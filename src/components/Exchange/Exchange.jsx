@@ -23,7 +23,7 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     gap: "6px",
-    height: "45dvh",
+    height: "42dvh",
   },
   wordTag: {
     px: "8px",
