@@ -7,6 +7,7 @@ import Cells from "@/components/GameComponents/Cells";
 import {
   compareCaseInsensitive,
   getClickedElement,
+  removeEmptySpace,
   replaceAt,
   shuffle,
 } from "@/helpers/common";
@@ -18,6 +19,8 @@ const FindWordGameWidget = ({
   media: { filename, aspectRatio },
   handleNext,
 }) => {
+  const textWithoutEmptySpace = removeEmptySpace(word);
+
   const [animatedEls, setAnimatedEls] = useState(new Map());
   const [input, setInput] = useState(() => " ".repeat(word.length));
   const [shuffledWord, setShuffledWord] = useState(() => shuffle(word));
@@ -26,14 +29,7 @@ const FindWordGameWidget = ({
   const [secondBox, setSecondBox] = useState([]);
   const [answerStatus, setAnswerStatus] = useState("initial");
 
-  const cleanInput = useMemo(
-    () =>
-      input
-        .split("")
-        .filter((char) => char.trim())
-        .join(""),
-    [input]
-  );
+  const cleanInput = useMemo(() => removeEmptySpace(input), [input]);
 
   const controls = useAnimation();
 
@@ -46,7 +42,9 @@ const FindWordGameWidget = ({
     }
 
     const clickedIndex = parseInt(clickedElement.dataset.index, 10);
-    const targetIndex = input.split("").findIndex((char) => char === " ");
+    const targetIndex = input
+      .split("")
+      .findIndex((char, i) => char === " " && !firstBox.includes(i));
     const originalOptions = clickedElement.getBoundingClientRect();
     const targetOptions = document
       .getElementsByClassName("first")
@@ -103,7 +101,9 @@ const FindWordGameWidget = ({
     }
 
     const clickedIndex = parseInt(clickedElement.dataset.index, 10);
-    const targetIndex = history.find(({ des }) => des === clickedIndex);
+    const targetIndex = history.find(
+      ({ des, org }, i) => des === clickedIndex && !secondBox.includes(org)
+    );
 
     const originalOptions = clickedElement.getBoundingClientRect();
     const targetOptions = document
@@ -180,8 +180,6 @@ const FindWordGameWidget = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cleanInput, input, word, firstBox, secondBox, controls]);
 
-  console.log({ cleanInput, answerStatus });
-
   return (
     <>
       <MotionDiv
@@ -202,7 +200,7 @@ const FindWordGameWidget = ({
           <Image
             className="text-center"
             width={300}
-            height={300 * aspectRatio}
+            height={300 * (aspectRatio || 1)}
             style={{ margin: "auto" }}
             src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${filename}`}
             alt="bird"

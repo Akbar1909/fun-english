@@ -70,3 +70,9 @@ export const replaceAt = (word, replacement, index) => {
 export const compareCaseInsensitive = (str1, str2) => {
   return str1.toUpperCase() === str2.toUpperCase();
 };
+
+export const removeEmptySpace = (input) =>
+  input
+    .split("")
+    .filter((char) => char.trim())
+    .join("");
