@@ -20,6 +20,7 @@ const MasonryList = ({ items = [] }) => {
             key={index}
             index={index}
             mediaName={data?.media?.filename}
+            aspectRatio={data?.media?.aspectRatio}
             {...data}
           />
         );

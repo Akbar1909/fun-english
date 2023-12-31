@@ -10,9 +10,12 @@ export default function WordCard({
   example,
   wordTag: { tag, ...rest },
   mediaName,
+  aspectRatio = 1,
   preview = false,
 }) {
   const color = rest.color || "blue";
+
+  console.log({ aspectRatio });
 
   return (
     <WordCardHoverWrapper color={color}>
@@ -52,7 +55,7 @@ export default function WordCard({
           <Image
             className="text-center"
             width={300}
-            height={300}
+            height={300 / (aspectRatio || 1)}
             src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${mediaName}`}
             alt="bird"
           />

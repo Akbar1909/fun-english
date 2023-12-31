@@ -76,10 +76,21 @@ const AddWordForm = () => {
         .getCroppedCanvas()
         .toDataURL();
 
-      const { externalMedia, ...rest } = values;
+      const image = new Image();
 
-      const response = await mutateAsync(prepareWordDto({ ...rest, dataUrl }));
+      image.src = dataUrl;
 
+      console.log(image.naturalWidth / image.naturalHeight, "test");
+
+      image.onload = async function () {
+        const aspectRatio = Number((image.width / image.height).toFixed(2));
+
+        const { externalMedia, ...rest } = values;
+
+        const response = await mutateAsync(
+          prepareWordDto({ ...rest, dataUrl, aspectRatio })
+        );
+      };
     }
   });
   const handleCancel = () => {

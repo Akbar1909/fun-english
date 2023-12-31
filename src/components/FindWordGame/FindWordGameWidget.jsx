@@ -12,7 +12,12 @@ import {
 } from "@/helpers/common";
 import { MotionDiv } from "../client-side/MotionDiv";
 
-const FindWordGameWidget = ({ word, description, media, handleNext }) => {
+const FindWordGameWidget = ({
+  word,
+  description,
+  media: { filename, aspectRatio },
+  handleNext,
+}) => {
   const [animatedEls, setAnimatedEls] = useState(new Map());
   const [input, setInput] = useState(() => " ".repeat(word.length));
   const [shuffledWord, setShuffledWord] = useState(() => shuffle(word));
@@ -165,6 +170,7 @@ const FindWordGameWidget = ({ word, description, media, handleNext }) => {
       firstBox.length === 0 &&
       secondBox.length === 0
     ) {
+      debugger;
       setAnswerStatus("error");
 
       return;
@@ -173,6 +179,8 @@ const FindWordGameWidget = ({ word, description, media, handleNext }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cleanInput, input, word, firstBox, secondBox, controls]);
+
+  console.log({ cleanInput, answerStatus });
 
   return (
     <>
@@ -190,14 +198,16 @@ const FindWordGameWidget = ({ word, description, media, handleNext }) => {
         <Stack direction="row" alignItems="center" mb={3}>
           <div dangerouslySetInnerHTML={{ __html: description }} />
         </Stack>
-        <Image
-          className="text-center"
-          style={{ margin: "auto", width: "100%", borderRadius: "4px" }}
-          width={300}
-          height={300}
-          src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${media.filename}`}
-          alt="bird"
-        />
+        <Box>
+          <Image
+            className="text-center"
+            width={300}
+            height={300 * aspectRatio}
+            style={{ margin: "auto" }}
+            src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${filename}`}
+            alt="bird"
+          />
+        </Box>
         <Box
           mt={2}
           sx={{ display: "flex", justifyContent: "center" }}

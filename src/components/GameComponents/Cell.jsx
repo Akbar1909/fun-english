@@ -13,21 +13,24 @@ const Cell = ({
 }) => {
   const theme = useTheme();
 
+  console.log({ answerStatus, className });
+
   const correct = answerStatus === "correct";
   const error = answerStatus === "error";
 
   const variants = {
     success: {
       backgroundColor: theme.palette.success.main,
-      color: theme.palette.common.white,
+      color: theme.palette.success.light,
       transform: "scale(1)",
     },
     initial: {
       backgroundColor: theme.palette.common.white,
     },
     error: {
-      backgroundColor: theme.palette.error.main,
-      color: theme.palette.common.white,
+      border: "1px solid",
+      borderColor: theme.palette.error.main,
+      color: theme.palette.error.light,
     },
   };
 
