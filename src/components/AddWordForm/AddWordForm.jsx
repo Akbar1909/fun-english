@@ -80,8 +80,6 @@ const AddWordForm = () => {
 
       image.src = dataUrl;
 
-      console.log(image.naturalWidth / image.naturalHeight, "test");
-
       image.onload = async function () {
         const aspectRatio = Number((image.width / image.height).toFixed(2));
 

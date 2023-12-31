@@ -15,8 +15,6 @@ export default function WordCard({
 }) {
   const color = rest.color || "blue";
 
-  console.log({ aspectRatio });
-
   return (
     <WordCardHoverWrapper color={color}>
       <Box

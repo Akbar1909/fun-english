@@ -76,3 +76,15 @@ export const removeEmptySpace = (input) =>
     .split("")
     .filter((char) => char.trim())
     .join("");
+
+export const findSpecialCharIndexes = (str, char = " ") => {
+  const output = [];
+
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === char) {
+      output.push(i);
+    }
+  }
+
+  return output;
+};

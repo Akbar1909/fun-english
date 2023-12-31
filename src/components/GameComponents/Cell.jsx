@@ -13,8 +13,6 @@ const Cell = ({
 }) => {
   const theme = useTheme();
 
-  console.log({ answerStatus, className });
-
   const correct = answerStatus === "correct";
   const error = answerStatus === "error";
 

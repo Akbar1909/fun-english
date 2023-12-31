@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, Fragment } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { useAnimation } from "framer-motion";
 import Image from "next/image";
 import { Box, Stack } from "@mui/material";
 import Cells from "@/components/GameComponents/Cells";
+import Cell from "../GameComponents/Cell";
 import {
   compareCaseInsensitive,
+  findSpecialCharIndexes,
   getClickedElement,
   removeEmptySpace,
   replaceAt,
@@ -19,11 +21,14 @@ const FindWordGameWidget = ({
   media: { filename, aspectRatio },
   handleNext,
 }) => {
-  const textWithoutEmptySpace = removeEmptySpace(word);
+  const textWithoutEmptySpace = useMemo(() => removeEmptySpace(word), [word]);
+  const emptySpaceIndexes = useMemo(() => findSpecialCharIndexes(word), [word]);
 
   const [animatedEls, setAnimatedEls] = useState(new Map());
   const [input, setInput] = useState(() => " ".repeat(word.length));
-  const [shuffledWord, setShuffledWord] = useState(() => shuffle(word));
+  const [shuffledWord, setShuffledWord] = useState(() =>
+    shuffle(textWithoutEmptySpace)
+  );
   const [history, setHistory] = useState([]);
   const [firstBox, setFirstBox] = useState([]);
   const [secondBox, setSecondBox] = useState([]);
@@ -61,7 +66,7 @@ const FindWordGameWidget = ({
 
     const animatedEl = (
       <MotionDiv
-        style={{
+        initial={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -101,26 +106,26 @@ const FindWordGameWidget = ({
     }
 
     const clickedIndex = parseInt(clickedElement.dataset.index, 10);
-    const targetIndex = history.find(
+    const { org, des } = history.find(
       ({ des, org }, i) => des === clickedIndex && !secondBox.includes(org)
     );
 
     const originalOptions = clickedElement.getBoundingClientRect();
     const targetOptions = document
       .getElementsByClassName("second")
-      [targetIndex.org].getBoundingClientRect();
+      [org].getBoundingClientRect();
 
     flushSync(() => {
       setInput((preInput) => replaceAt(preInput, " ", clickedIndex));
-      setSecondBox((pre) => [...pre, targetIndex.org]);
-      setShuffledWord((preShuffleWord) =>
-        replaceAt(preShuffleWord, textContent, targetIndex.org)
+      setSecondBox((pre) => [...pre, org]);
+      setShuffledWord((preShuffledWord) =>
+        replaceAt(preShuffledWord, textContent, org)
       );
     });
 
     const animatedEl = (
       <MotionDiv
-        style={{
+        initial={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -136,26 +141,25 @@ const FindWordGameWidget = ({
           top: `${targetOptions.top}px`,
         }}
         onAnimationComplete={() => {
-          setSecondBox((pre) => pre.filter((item) => item !== targetIndex.org));
-          setAnimatedEls(
-            (map) =>
-              new Map(map.set(`${targetIndex.org}${targetIndex.des}`, null))
+          setSecondBox((pre) => pre.filter((item) => item !== org));
+          setHistory((preHistory) =>
+            preHistory.filter((item) => item.org !== org)
           );
+          setAnimatedEls((map) => new Map(map.set(`${org}${des}`, null)));
         }}
       >
         {textContent}
       </MotionDiv>
     );
 
-    setAnimatedEls(
-      (map) =>
-        new Map(map.set(`${targetIndex.org}${targetIndex.des}`, animatedEl))
-    );
+    setAnimatedEls((map) => new Map(map.set(`${org}${des}`, animatedEl)));
   };
 
   useEffect(() => {
+    console.log({ cleanInput, word });
+
     if (
-      compareCaseInsensitive(input, word) &&
+      compareCaseInsensitive(input.trim(), textWithoutEmptySpace) &&
       firstBox.length === 0 &&
       secondBox.length === 0
     ) {
@@ -166,11 +170,10 @@ const FindWordGameWidget = ({
     }
 
     if (
-      cleanInput.length === word.length &&
+      cleanInput.length === textWithoutEmptySpace.length &&
       firstBox.length === 0 &&
       secondBox.length === 0
     ) {
-      debugger;
       setAnswerStatus("error");
 
       return;
@@ -178,7 +181,15 @@ const FindWordGameWidget = ({
     setAnswerStatus("initial");
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cleanInput, input, word, firstBox, secondBox, controls]);
+  }, [
+    cleanInput,
+    input,
+    word,
+    firstBox,
+    secondBox,
+    controls,
+    textWithoutEmptySpace,
+  ]);
 
   return (
     <>
@@ -206,19 +217,54 @@ const FindWordGameWidget = ({
             alt="bird"
           />
         </Box>
-        <Box
+        <Stack
+          direction="row"
+          alignItems="center"
+          flexWrap="wrap"
           mt={2}
           sx={{ display: "flex", justifyContent: "center" }}
           onClick={handleRevert}
         >
-          <Cells
-            inVisibleIndexes={firstBox}
-            className="first"
-            prefixId="first"
-            word={input}
-            answerStatus={answerStatus}
-          />
-        </Box>
+          {word.split(" ").map((wordChunk, i) => {
+            const word =
+              i === 0
+                ? input.slice(0, wordChunk.length)
+                : input.slice(
+                    emptySpaceIndexes[i - 1],
+                    emptySpaceIndexes[i - 1] + wordChunk.length
+                  );
+
+            return (
+              <Fragment key={i}>
+                {i !== 0 && (
+                  <Box
+                    sx={{
+                      width: "30px",
+                      height: "44px",
+                    }}
+                  />
+                )}
+                {word.split("").map((char, ix) => {
+                  const index = ix + i * wordChunk.length - i;
+
+                  return (
+                    <Cell
+                      key={ix}
+                      hiddenContent={firstBox.includes(index)}
+                      className="first"
+                      prefixId="first"
+                      char={char}
+                      answerStatus={answerStatus}
+                      withWrapper={false}
+                      index={index}
+                      pointer
+                    />
+                  );
+                })}
+              </Fragment>
+            );
+          })}
+        </Stack>
         <Box
           sx={{
             position: "absolute",
