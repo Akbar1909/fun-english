@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, Fragment } from "react";
 import { createPortal, flushSync } from "react-dom";
-import { useAnimation } from "framer-motion";
 import Image from "next/image";
 import { Box, Stack } from "@mui/material";
 import Cells from "@/components/GameComponents/Cells";
@@ -35,8 +34,6 @@ const FindWordGameWidget = ({
   const [answerStatus, setAnswerStatus] = useState("initial");
 
   const cleanInput = useMemo(() => removeEmptySpace(input), [input]);
-
-  const controls = useAnimation();
 
   const handleInput = (e) => {
     const clickedElement = getClickedElement(e.target, "char-view");
@@ -107,7 +104,7 @@ const FindWordGameWidget = ({
 
     const clickedIndex = parseInt(clickedElement.dataset.index, 10);
     const { org, des } = history.find(
-      ({ des, org }, i) => des === clickedIndex && !secondBox.includes(org)
+      ({ des, org }) => des === clickedIndex && !secondBox.includes(org)
     );
 
     const originalOptions = clickedElement.getBoundingClientRect();
@@ -181,15 +178,7 @@ const FindWordGameWidget = ({
     setAnswerStatus("initial");
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    cleanInput,
-    input,
-    word,
-    firstBox,
-    secondBox,
-    controls,
-    textWithoutEmptySpace,
-  ]);
+  }, [cleanInput, input, word, firstBox, secondBox, textWithoutEmptySpace]);
 
   return (
     <>
