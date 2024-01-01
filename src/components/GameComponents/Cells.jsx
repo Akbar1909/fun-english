@@ -12,7 +12,6 @@ const Cells = ({
   prefixId,
   className,
   pointer = true,
-  inVisibleIndexes,
   answerStatus,
   withWrapper = true,
 }) => {
@@ -21,7 +20,6 @@ const Cells = ({
       <CellsWrapper>
         {word.split("").map((char, i) => (
           <Cell
-            hiddenContent={inVisibleIndexes.includes(i)}
             pointer={pointer}
             index={i}
             className={className}

@@ -1,11 +1,14 @@
 import { Stack, Box, IconButton, Typography, Button } from "@mui/material";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import FindWordGameWidget from "./FindWordGameWidget";
+import useFindWordGameController, {
+  FIND_WORD_GAME_ACTION_TYPES,
+} from "./_hooks/useFindWordGameController";
 
 const styles = {
   root: {
@@ -23,6 +26,8 @@ const styles = {
 };
 
 const FindWordGameBoard = ({ words }) => {
+  const { state, dispatch, currentWordState } =
+    useFindWordGameController(words);
   const [index, setIndex] = useState(0);
 
   const handleNext = () => {
@@ -31,6 +36,11 @@ const FindWordGameBoard = ({ words }) => {
     }
 
     setIndex((preIndex) => preIndex + 1);
+
+    dispatch({
+      type: FIND_WORD_GAME_ACTION_TYPES.SET_SELECTED_WORD,
+      payload: words[index + 1]?.word.trim(),
+    });
   };
 
   return (
@@ -78,6 +88,8 @@ const FindWordGameBoard = ({ words }) => {
       </Stack>
 
       <FindWordGameWidget
+        dispatch={dispatch}
+        state={currentWordState}
         {...words[index]}
         word={words[index].word.trim()}
         key={index}
