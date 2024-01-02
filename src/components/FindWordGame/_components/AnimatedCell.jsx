@@ -6,14 +6,10 @@ const AnimatedCell = ({
   handleAnimationComplete,
   targetOptions,
   originalOptions,
-  dataValue,
-  className,
   char,
 }) => {
   return (
     <MotionDiv
-      className={className}
-      data-value={dataValue}
       initial={{
         display: "flex",
         alignItems: "center",
@@ -30,6 +26,7 @@ const AnimatedCell = ({
         top: `${targetOptions.top}px`,
       }}
       onAnimationComplete={handleAnimationComplete}
+      transition={{ duration: 0.4 }}
     >
       <Typography variant="h3">{char}</Typography>
     </MotionDiv>

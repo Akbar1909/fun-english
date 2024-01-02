@@ -12,18 +12,23 @@ export const FIND_WORD_GAME_ACTION_TYPES = {
 
 const prepareInitialState = (words) =>
   words.reduce((acc, { word }) => {
-    const textWithoutEmptySpace = removeEmptySpace(word);
+    const trimmedWord = word.trim();
+    const textWithoutEmptySpace = removeEmptySpace(trimmedWord);
 
     return {
       ...acc,
-      [word.trim()]: {
+      [trimmedWord]: {
         word,
+        trimmedWord: trimmedWord,
         history: [],
+        firstBox: [],
+        secondBox: [],
+        emptySpaceIndexes: findSpecialCharIndexes(word),
+        textWithoutEmptySpace,
         shuffledWord: shuffle(textWithoutEmptySpace),
         input: " ".repeat(word.length),
         answerStatus: "initial",
-        textWithoutEmptySpace,
-        emptySpaceIndexes: findSpecialCharIndexes(word),
+        dirty: false,
       },
     };
   }, {});
@@ -40,8 +45,8 @@ const reducer = (state, { type, payload }) => {
         ...state,
         words: {
           ...state.words,
-          [state.selectedWord]: {
-            ...state.words[state.selectedWord],
+          [payload.word]: {
+            ...state.words[payload.word],
             ...payload,
           },
         },
@@ -51,10 +56,10 @@ const reducer = (state, { type, payload }) => {
   }
 };
 
-const useFindWordGameController = (words) => {
+const useFindWordGameController = (words, index) => {
   const [state, dispatch] = useReducer(reducer, {
     words: prepareInitialState(words),
-    selectedWord: words[0].word.trim(),
+    selectedWord: words[index].word.trim(),
   });
 
   return {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, Fragment, useRef } from "react";
-import { createPortal } from "react-dom";
+import { createPortal, flushSync } from "react-dom";
 import Image from "next/image";
 import { Box, Stack } from "@mui/material";
 import Cells from "@/components/GameComponents/Cells";
@@ -14,7 +14,7 @@ import { MotionDiv } from "../client-side/MotionDiv";
 import { FIND_WORD_GAME_ACTION_TYPES } from "./_hooks/useFindWordGameController";
 import AnimatedCell from "./_components/AnimatedCell";
 
-const map = new Map();
+let temp = {};
 
 const FindWordGameWidget = ({
   word,
@@ -24,90 +24,89 @@ const FindWordGameWidget = ({
   dispatch,
   state,
 }) => {
-  const {
-    textWithoutEmptySpace,
-    emptySpaceIndexes,
-    shuffledWord,
-    input,
-    history,
-    answerStatus,
-  } = state;
-
-  const hiddenInputText = useRef(input);
-  const hiddenShuffledWord = useRef(shuffledWord);
+  const dirtyRef = useRef(false);
+  const { textWithoutEmptySpace, emptySpaceIndexes, trimmedWord, dirty } =
+    state;
   const [animatedEls, setAnimatedEls] = useState(new Map());
-
+  const [input, setInput] = useState(() => state.input);
+  const [shuffledWord, setShuffledWord] = useState(() => state.shuffledWord);
+  const [history, setHistory] = useState(() => state.history);
+  const [firstBox, setFirstBox] = useState(() => state.firstBox);
+  const [secondBox, setSecondBox] = useState(() => state.secondBox);
+  const [answerStatus, setAnswerStatus] = useState(() => state.answerStatus);
   const cleanInput = useMemo(() => removeEmptySpace(input), [input]);
 
   const handleInput = (e) => {
-    const clickedElement = getClickedElement(e.target, "char-view");
-    const char = clickedElement.textContent;
+    dirtyRef.current = true;
 
-    if (char.trim().length === 0) {
+    dispatch({
+      type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
+      payload: { word: trimmedWord, dirty: true },
+    });
+
+    const clickedElement = getClickedElement(e.target, "char-view");
+    const textContent = clickedElement.textContent;
+
+    if (textContent.trim().length === 0) {
       return;
     }
 
     const clickedIndex = parseInt(clickedElement.dataset.index, 10);
-    const targetIndex = hiddenInputText.current
+    const targetIndex = input
       .split("")
-      .findIndex((char) => char === " ");
-
+      .findIndex((char, i) => char === " " && !firstBox.includes(i));
     const originalOptions = clickedElement.getBoundingClientRect();
     const targetOptions = document
       .getElementsByClassName("first")
       [targetIndex].getBoundingClientRect();
 
+    console.log({ targetIndex, clickedIndex });
+
     const newShuffledWord = replaceAt(shuffledWord, " ", clickedIndex);
-    const updatedInput = replaceAt(hiddenInputText.current, char, targetIndex);
+    const newFirstBox = [...firstBox, targetIndex];
+    const newInput = replaceAt(input, textContent, targetIndex);
 
-    hiddenInputText.current = updatedInput;
-    hiddenShuffledWord.current = newShuffledWord;
-
-    dispatch({
-      type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
-      payload: {
-        shuffledWord: newShuffledWord,
-        lastEmptyCharIndex: targetIndex,
-        history: [
-          ...history,
-          {
-            des: targetIndex,
-            org: clickedIndex,
-            char,
-          },
-        ],
-      },
+    flushSync(() => {
+      setShuffledWord(newShuffledWord);
+      setFirstBox((pre) => [...pre, targetIndex]);
+      setInput(newInput);
     });
+
+    console.log({ firstBox, newFirstBox });
+
+    temp = {
+      ...temp,
+      shuffledWord: newShuffledWord,
+      firstBox: newFirstBox,
+      input: newInput,
+    };
 
     const animatedEl = (
       <AnimatedCell
-        dataValue={`${updatedInput}-${targetIndex}-${clickedIndex}`}
-        className={"first-animated"}
-        targetOptions={targetOptions}
         originalOptions={originalOptions}
-        char={char}
+        targetOptions={targetOptions}
+        char={textContent}
         handleAnimationComplete={() => {
-          const el = document.getElementsByClassName("first-animated")?.[0];
+          setFirstBox((preFirstBox) => {
+            const tempFirstBox = preFirstBox.filter(
+              (item) => item !== targetIndex
+            );
 
-          if (!el) {
-            return;
-          }
+            temp.firstBox = tempFirstBox;
 
-          let [updatedInput, targetIndex, clickedIndex] = el
-            .getAttribute("data-value")
-            .split("-");
-
-          targetIndex = parseInt(targetIndex, 10);
-          clickedIndex = parseInt(clickedIndex, 10);
-
-          dispatch({
-            type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
-            payload: {
-              input: updatedInput,
-            },
+            return tempFirstBox;
           });
-
           setAnimatedEls((map) => new Map(map.set(targetIndex, null)));
+          setHistory((preHistory) => {
+            const tempHistory = [
+              ...preHistory,
+              { des: targetIndex, org: clickedIndex, char: textContent },
+            ];
+
+            temp.history = tempHistory;
+
+            return tempHistory;
+          });
         }}
       />
     );
@@ -116,80 +115,61 @@ const FindWordGameWidget = ({
   };
 
   const handleRevert = (e) => {
-    const clickedElement = getClickedElement(e.target, "char-view");
-    const char = clickedElement.textContent;
+    dirtyRef.current = true;
 
-    if (char.trim().length === 0 && clickedElement) {
+    dispatch({
+      type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
+      payload: { word: trimmedWord, dirty: true },
+    });
+
+    const clickedElement = getClickedElement(e.target, "char-view");
+    const textContent = clickedElement.textContent;
+
+    if (textContent.trim().length === 0) {
       return;
     }
 
     const clickedIndex = parseInt(clickedElement.dataset.index, 10);
-
-    const { org, des } = history.find(({ des }) => des === clickedIndex);
+    const { org, des } = history.find(
+      ({ des, org }) => des === clickedIndex && !secondBox.includes(org)
+    );
 
     const originalOptions = clickedElement.getBoundingClientRect();
     const targetOptions = document
       .getElementsByClassName("second")
       [org].getBoundingClientRect();
 
-    const key = `${org}${des}`;
-
-    hiddenInputText.current = replaceAt(
-      hiddenInputText.current,
-      " ",
-      clickedIndex
-    );
-
-    const updatedShuffledWord = replaceAt(
-      hiddenShuffledWord.current,
-      char,
-      org
-    );
-
-    hiddenShuffledWord.current = updatedShuffledWord;
-
-    dispatch({
-      type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
-      payload: {
-        input: hiddenInputText.current,
-      },
+    flushSync(() => {
+      setInput((preInput) => {
+        temp.input = replaceAt(preInput, " ", clickedIndex);
+        return temp.input;
+      });
+      setSecondBox((pre) => {
+        temp.secondBox = [...pre, org];
+        return temp.secondBox;
+      });
+      setShuffledWord((preShuffledWord) => {
+        temp.shuffledWord = replaceAt(preShuffledWord, textContent, org);
+        return temp.shuffledWord;
+      });
     });
-
-    map.set(key, history);
 
     const animatedEl = (
       <AnimatedCell
-        className="second-animated"
-        dataValue={`${org}-${updatedShuffledWord}-${des}`}
         originalOptions={originalOptions}
         targetOptions={targetOptions}
-        char={char}
         handleAnimationComplete={() => {
-          const el = document.getElementsByClassName("second-animated")?.[0];
-
-          if (!el) {
-            return;
-          }
-
-          let [org, updatedShuffledWord, des] = el
-            .getAttribute("data-value")
-            .split("-");
-
-          org = parseInt(org, 10);
-          des = parseInt(des, 10);
-
-          const history = map.get(`${org}${des}`);
-
-          dispatch({
-            type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
-            payload: {
-              history: history.filter((item) => item.org !== org),
-              shuffledWord: updatedShuffledWord,
-            },
+          setSecondBox((pre) => {
+            temp.secondBox = pre.filter((item) => item !== org);
+            return temp.secondBox;
           });
-
+          setHistory((preHistory) => {
+            temp.history = preHistory.filter((item) => item.org !== org);
+            return temp.history;
+          });
           setAnimatedEls((map) => new Map(map.set(`${org}${des}`, null)));
         }}
+        char={textContent}
       />
     );
 
@@ -197,54 +177,74 @@ const FindWordGameWidget = ({
   };
 
   useEffect(() => {
-    if (compareCaseInsensitive(input.trim(), textWithoutEmptySpace)) {
-      dispatch({
-        type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
-        payload: {
-          answerStatus: "correct",
-        },
-      });
+    if (!dirtyRef.current) {
+      return;
+    }
 
+    if (
+      compareCaseInsensitive(input.trim(), textWithoutEmptySpace) &&
+      firstBox.length === 0 &&
+      secondBox.length === 0
+    ) {
+      setAnswerStatus("correct");
+      temp.answerStatus = "correct";
       setTimeout(() => handleNext(), input.length * 0.05 * 1000 + 500);
 
       return;
     }
 
-    if (cleanInput.length === textWithoutEmptySpace.length) {
-      dispatch({
-        type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
-        payload: {
-          answerStatus: "error",
-        },
-      });
+    if (
+      cleanInput.length === textWithoutEmptySpace.length &&
+      firstBox.length === 0 &&
+      secondBox.length === 0
+    ) {
+      setAnswerStatus("error");
+      temp.answerStatus = "error";
 
       return;
     }
 
-    dispatch({
-      type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
-      payload: {
-        answerStatus: "initial",
-      },
-    });
+    setAnswerStatus("initial");
+    temp.answerStatus = "initial";
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cleanInput, input, word, textWithoutEmptySpace]);
+  }, [cleanInput, input, word, firstBox, secondBox, textWithoutEmptySpace]);
+
+  useEffect(() => {
+    return () => {
+      if (dirtyRef.current) {
+        dispatch({
+          type: FIND_WORD_GAME_ACTION_TYPES.SET_NEW_VALUE_TO_WORD_PROPERTY,
+          payload: {
+            ...temp,
+            word: trimmedWord,
+          },
+        });
+      }
+    };
+  }, [dispatch, word, trimmedWord]);
+
+  const splitedWord = word.split(" ");
 
   return (
     <>
       <MotionDiv
         style={{
           flex: 1,
-          position: "relative",
-          opacity: 0,
-          left: "100%",
-          scaleZ: 0,
+          padding: "8px",
+          display: "flex",
+          flexDirection: "column",
         }}
+        initial={{ opacity: 0, left: "100%", scaleZ: 0 }}
         transition={{ duration: 0.5 }}
         animate={{ opacity: 1, left: 0, scaleZ: 1 }}
       >
-        <Stack direction="row" alignItems="center" mb={3}>
+        <Stack
+          sx={{ fontSize: "20px" }}
+          direction="row"
+          alignItems="center"
+          mb={3}
+        >
           <div dangerouslySetInnerHTML={{ __html: description }} />
         </Stack>
         <Box>
@@ -261,11 +261,11 @@ const FindWordGameWidget = ({
           direction="row"
           alignItems="center"
           flexWrap="wrap"
-          mt={2}
+          mt={3}
           sx={{ display: "flex", justifyContent: "center" }}
           onClick={handleRevert}
         >
-          {word.split(" ").map((wordChunk, i) => {
+          {splitedWord.map((wordChunk, i) => {
             const word =
               i === 0
                 ? input.slice(0, wordChunk.length)
@@ -285,12 +285,14 @@ const FindWordGameWidget = ({
                   />
                 )}
                 {word.split("").map((char, ix) => {
-                  const index = ix + i * wordChunk.length - i;
+                  const index = ix + (splitedWord?.[i - 1]?.length || 0);
+
+                  console.log({ index, char });
 
                   return (
                     <Cell
                       key={ix}
-                      hiddenContent={false}
+                      hiddenContent={firstBox.includes(index)}
                       className="first"
                       prefixId="first"
                       char={char}
@@ -298,6 +300,7 @@ const FindWordGameWidget = ({
                       withWrapper={false}
                       index={index}
                       pointer
+                      dirty={dirty}
                     />
                   );
                 })}
@@ -307,15 +310,21 @@ const FindWordGameWidget = ({
         </Stack>
         <Box
           sx={{
-            position: "absolute",
             bottom: "10px",
             display: "flex",
             justifyContent: "center",
             width: "100%",
+            marginTop: "auto",
           }}
           onClick={handleInput}
         >
-          <Cells className="second" prefixId="second" word={shuffledWord} />
+          <Cells
+            inVisibleIndexes={secondBox}
+            className="second"
+            prefixId="second"
+            word={shuffledWord}
+            dirty={dirty}
+          />
         </Box>
       </MotionDiv>
 

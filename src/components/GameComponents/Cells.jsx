@@ -14,12 +14,16 @@ const Cells = ({
   pointer = true,
   answerStatus,
   withWrapper = true,
+  inVisibleIndexes = [],
+  dirty = false,
 }) => {
   if (withWrapper) {
     return (
       <CellsWrapper>
         {word.split("").map((char, i) => (
           <Cell
+            dirty={dirty}
+            hiddenContent={inVisibleIndexes.includes(i)}
             pointer={pointer}
             index={i}
             className={className}
