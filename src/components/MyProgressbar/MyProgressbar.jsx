@@ -6,7 +6,7 @@ const MyProgressbar = ({ initialProcess, process, style }) => {
   const theme = useTheme();
   return (
     <MotionDiv
-      style={{ ...style, backgroundColor: theme.palette.info.main }}
+      style={{ ...style, backgroundColor: theme.palette.common.black }}
       initial={{ width: initialProcess }}
       animate={{ width: process }}
       transition={{ duration: 1 }}
