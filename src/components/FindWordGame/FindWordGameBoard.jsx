@@ -10,6 +10,7 @@ import useFindWordGameController, {
   FIND_WORD_GAME_ACTION_TYPES,
 } from "./_hooks/useFindWordGameController";
 import MyProgressbar from "../MyProgressbar/MyProgressbar";
+import MyProgressNumber from "../MyProgressNumber/MyProgressNumber";
 
 const styles = {
   root: {
@@ -27,7 +28,7 @@ const styles = {
 };
 
 const FindWordGameBoard = ({ words }) => {
-  const [index, setIndex] = useState(19);
+  const [index, setIndex] = useState(0);
   const { state, dispatch, currentWordState } = useFindWordGameController(
     words,
     index
@@ -90,7 +91,7 @@ const FindWordGameBoard = ({ words }) => {
           </Box>
 
           <Box>
-            <Typography sx={{ fontWeight: "bold" }}>
+            <Typography sx={{ fontWeight: "bold", fontSize: "1.3rem" }}>
               {index + 1} / {total}
             </Typography>
           </Box>
