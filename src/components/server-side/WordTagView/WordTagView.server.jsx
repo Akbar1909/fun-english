@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { forwardRef } from "react";
+import WordTagViewWrapperClient from "./WordTagViewWrapper.client";
 
 const styles = {
   root: {
@@ -32,25 +33,32 @@ const WordTagView = forwardRef(
         className="word-tag-view"
         position="relative"
         height="fit-content"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
         sx={[
           {
             border: "1px solid",
             borderColor: "transparent",
             cursor: "pointer",
           },
+          styles.root,
+          { backgroundColor: color || "blue" },
           ...(Array.isArray(sx) ? sx : [sx]),
         ]}
       >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          sx={[styles.root, { backgroundColor: color || "blue" }]}
-        >
-          <Typography variant="h3" sx={{ textTransform: "capitalize" }}>
-            {tag} ({count})
+        <WordTagViewWrapperClient>
+          <Typography
+            variant="h3"
+            sx={{
+              textTransform: "capitalize",
+              fontWeight: 300,
+              width: "max-content",
+            }}
+          >
+            {tag} | {count}
           </Typography>
-        </Box>
+        </WordTagViewWrapperClient>
       </Box>
     );
   }

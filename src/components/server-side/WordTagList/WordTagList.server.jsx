@@ -21,7 +21,7 @@ const WordTagList = async () => {
   const tags = await fetchWordTagsCount();
 
   return (
-    <Stack direction="row" columnGap="8px">
+    <Stack overflow="scroll" direction="row" columnGap="8px">
       {tags.map((tag) => (
         <WordTagView key={tag.wordTagId} {...tag} />
       ))}

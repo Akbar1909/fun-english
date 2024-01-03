@@ -13,6 +13,10 @@ export const prepareWordDto = (values) => {
 
 export const WORD_LEVELS = [
   {
+    label: "N",
+    value: "N",
+  },
+  {
     label: "A1",
     value: "A1",
   },

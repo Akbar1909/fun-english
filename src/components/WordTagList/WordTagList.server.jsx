@@ -13,7 +13,6 @@ const WordTagList = async () => {
           <Typography
             sx={{
               position: "relative",
-              paddingLeft: "30px",
               "&::before": {
                 content: '""',
                 position: "absolute",
