@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import {
   Stack,
@@ -29,6 +29,7 @@ const WordMeanWidget = ({
   internal = false,
   add,
 }) => {
+  const currentIndex = useRef(null);
   const [file, setFile] = useState(null);
   const saveMutate = useMutation({
     mutationFn: httpPostAttachPhotoToWord,
@@ -107,6 +108,7 @@ const WordMeanWidget = ({
           >
             <IconButton
               onClick={() => {
+                currentIndex.current = i;
                 s.mutate({
                   definition,
                   word,
@@ -116,7 +118,7 @@ const WordMeanWidget = ({
               }}
               sx={{ position: "absolute", right: 0, top: 0 }}
             >
-              {s.isPending ? (
+              {s.isPending && currentIndex.current === i ? (
                 <CircularProgress />
               ) : (
                 <FontAwesomeIcon icon={faPlus} />
