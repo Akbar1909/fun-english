@@ -1,6 +1,5 @@
 "use client";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import SearchInput from "@/components/SearchInput/SearchInput";
 import { Grid, Typography } from "@mui/material";
@@ -9,13 +8,8 @@ import { httpGetWordFromExternalDictionary } from "@/data/externalDictionary/ext
 import WordInfoWidget from "@/components/WordInfoWidget/WordInfoWidget";
 
 const ExternalSearchBox = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-  const search = searchParams.get("search");
+  const [search, setSearch] = useState("");
   const [debouncedValue, setDebouncedValue] = useState(search || "");
-
-  useEffect(() => {}, [debouncedValue, searchParams]);
 
   const [, _] = useDebounce(
     () => {
@@ -23,16 +17,6 @@ const ExternalSearchBox = () => {
     },
     1000,
     [search]
-  );
-
-  const createQueryString = useCallback(
-    (name, value) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams]
   );
 
   const state = useQuery({
@@ -53,9 +37,7 @@ const ExternalSearchBox = () => {
         <SearchInput
           value={search}
           onChange={(e) => {
-            router.push(
-              pathname + "?" + createQueryString("search", e.target.value)
-            );
+            setSearch(e.target.value);
           }}
         />
       </Grid>
@@ -68,7 +50,7 @@ const ExternalSearchBox = () => {
         flexDirection="column"
       >
         {state.isLoading ? (
-          <Typography variant="h1">Loading ({search})...🥱</Typography>
+          <Typography variant="h1">Loading ({search})...🏎️</Typography>
         ) : state.isError ? (
           <Typography variant="h1">No words 📭</Typography>
         ) : state.isSuccess ? (
