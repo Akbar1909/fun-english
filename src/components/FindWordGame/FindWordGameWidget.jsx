@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, Fragment, useRef } from "react";
 import { createPortal, flushSync } from "react-dom";
 import Image from "next/image";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, useTheme } from "@mui/material";
 import Cells from "@/components/GameComponents/Cells";
 import Cell from "../GameComponents/Cell";
 import {
@@ -24,6 +24,7 @@ const FindWordGameWidget = ({
   dispatch,
   state,
 }) => {
+  const theme = useTheme();
   const dirtyRef = useRef(false);
   const { textWithoutEmptySpace, emptySpaceIndexes, trimmedWord, dirty } =
     state;
@@ -60,8 +61,6 @@ const FindWordGameWidget = ({
       .getElementsByClassName("first")
       [targetIndex].getBoundingClientRect();
 
-    console.log({ targetIndex, clickedIndex });
-
     const newShuffledWord = replaceAt(shuffledWord, " ", clickedIndex);
     const newFirstBox = [...firstBox, targetIndex];
     const newInput = replaceAt(input, textContent, targetIndex);
@@ -71,8 +70,6 @@ const FindWordGameWidget = ({
       setFirstBox((pre) => [...pre, targetIndex]);
       setInput(newInput);
     });
-
-    console.log({ firstBox, newFirstBox });
 
     temp = {
       ...temp,
@@ -234,10 +231,13 @@ const FindWordGameWidget = ({
           padding: "8px",
           display: "flex",
           flexDirection: "column",
+          transformOrigin: "right",
+          alignItems: "center",
+          backgroundColor: theme.palette.background.default,
         }}
-        initial={{ opacity: 0, left: "100%", scaleZ: 0 }}
-        transition={{ duration: 0.5 }}
-        animate={{ opacity: 1, left: 0, scaleZ: 1 }}
+        initial={{ opacity: 0, left: "-100%" }}
+        transition={{ duration: 0.3 }}
+        animate={{ opacity: 1, left: "100%" }}
       >
         <Stack
           sx={{ fontSize: "20px" }}
@@ -245,16 +245,36 @@ const FindWordGameWidget = ({
           alignItems="center"
           mb={3}
         >
-          <div dangerouslySetInnerHTML={{ __html: description }} />
+          <Box
+            sx={{
+              position: "relative",
+              pl: 2,
+              fontSize: "22px",
+              color: theme.palette.info.contrastText,
+              "&::before": {
+                fontWeight: "bold",
+                content: '"-"',
+                position: "absolute",
+                left: 0,
+                top: 0,
+              },
+            }}
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
         </Stack>
-        <Box>
+        <Box
+          sx={{
+            width: `${window.innerWidth * 0.8}px`,
+            height: `${window.innerHeight * 0.3}px`,
+            position: "relative",
+          }}
+        >
           <Image
             className="text-center"
-            width={300}
-            height={300 * (aspectRatio || 1)}
-            style={{ margin: "auto" }}
+            layout="fill"
             src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${filename}`}
             alt="bird"
+            objectFit="contain"
           />
         </Box>
         <Stack
@@ -286,8 +306,6 @@ const FindWordGameWidget = ({
                 )}
                 {word.split("").map((char, ix) => {
                   const index = ix + (splitedWord?.[i - 1]?.length || 0);
-
-                  console.log({ index, char });
 
                   return (
                     <Cell

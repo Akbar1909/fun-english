@@ -1,9 +1,17 @@
-import { Stack, Box, IconButton, Typography, Button } from "@mui/material";
+import {
+  Stack,
+  Box,
+  IconButton,
+  Typography,
+  Button,
+  useTheme,
+} from "@mui/material";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
+  faFlagCheckered,
 } from "@fortawesome/free-solid-svg-icons";
 import FindWordGameWidget from "./FindWordGameWidget";
 import useFindWordGameController, {
@@ -11,6 +19,7 @@ import useFindWordGameController, {
 } from "./_hooks/useFindWordGameController";
 import MyProgressbar from "../MyProgressbar/MyProgressbar";
 import MyProgressNumber from "../MyProgressNumber/MyProgressNumber";
+import OutputWidget from "../GameComponents/OutputWidget";
 
 const styles = {
   root: {
@@ -28,6 +37,8 @@ const styles = {
 };
 
 const FindWordGameBoard = ({ words }) => {
+  const theme = useTheme();
+  const [finished, setFinished] = useState(false);
   const [index, setIndex] = useState(0);
   const { state, dispatch, currentWordState } = useFindWordGameController(
     words,
@@ -37,6 +48,7 @@ const FindWordGameBoard = ({ words }) => {
   const [maxIndex, setMaxIndex] = useState(0);
 
   const total = words.length;
+  const done = index === words.length - 1;
 
   const handleNext = () => {
     if (index === words.length - 1) {
@@ -80,6 +92,7 @@ const FindWordGameBoard = ({ words }) => {
             height: "40px",
             borderBottom: "1px solid",
             borderColor: (theme) => theme.palette.grey[300],
+            backgroundColor: theme.palette.info.light,
           }}
         >
           <Box sx={[{ borderRight: "1px solid" }, styles.paginationButtonBox]}>
@@ -102,6 +115,11 @@ const FindWordGameBoard = ({ words }) => {
                 <FontAwesomeIcon icon={faChevronRight} />
               </IconButton>
             )}
+            {done && (
+              <IconButton onClick={() => setFinished(!finished)}>
+                <FontAwesomeIcon icon={faFlagCheckered} />
+              </IconButton>
+            )}
           </Box>
         </Stack>
         <MyProgressbar
@@ -119,6 +137,7 @@ const FindWordGameBoard = ({ words }) => {
           handleNext={handleNext}
         />
       </Stack>
+      {finished && <OutputWidget />}
     </>
   );
 };

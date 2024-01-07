@@ -21,20 +21,8 @@ export default async function RootLayout({ children }) {
             minHeight: "100vh",
           }}
         >
-          <Suspense fallback={<div>loading...</div>}>
-            <MainLayoutHeader />
-          </Suspense>
-          <AuthChecker />
-          <Box
-            sx={{
-              my: { xs: 8, sm: 9 },
-            }}
-          >
-            {children}
-          </Box>
+          <Box>{children}</Box>
         </Container>
-        <footer>Footer</footer>
-        <EmptyFolderView />
       </body>
     </html>
   );

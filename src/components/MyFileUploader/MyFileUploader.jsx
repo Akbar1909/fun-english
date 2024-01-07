@@ -102,7 +102,8 @@ const MyFileUploader = ({
   const handleChange = async (files) => {
     const formData = new FormData();
     formData.append("file", files[0]);
-    mutate.mutate(formData);
+
+    onChange(files[0]);
   };
 
   const handleWindowDragEnter = (e) => {
@@ -176,7 +177,7 @@ const MyFileUploader = ({
         "&>label": {
           maxWidth: "100%",
           height: "120px",
-          borderColor: (theme) => theme.palette.border.form,
+          borderColor: (theme) => theme.palette.grey[300],
           "&>svg>path": {
             fill: (theme) => theme.palette.primary.main,
           },

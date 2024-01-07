@@ -16,6 +16,7 @@ const Cells = ({
   withWrapper = true,
   inVisibleIndexes = [],
   dirty = false,
+  handleClick,
 }) => {
   if (withWrapper) {
     return (

@@ -23,7 +23,7 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     gap: "6px",
-    height: "42dvh",
+    height: "44dvh",
   },
   wordTag: {
     px: "8px",
@@ -169,6 +169,8 @@ const Exchange = () => {
     const id = parseInt(clickedElement.getAttribute("data-id"), 10);
     const color = clickedElement.getAttribute("data-color");
     clickedElement.style.opacity = 0;
+
+    console.log({ id });
 
     const originalOptions = clickedElement.getBoundingClientRect();
     const targetOptions = document

@@ -10,6 +10,13 @@ const request = axios.create({
   },
 });
 
+export const dictionaryRequest = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_EXTERNAL_DICTIONARY_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 request.interceptors.request.use(async (config) => {
   if (isServer) {
     const { cookies } = await import("next/headers"),
