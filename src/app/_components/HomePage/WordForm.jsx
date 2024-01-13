@@ -29,6 +29,9 @@ const WordForm = () => {
   const uploadMutate = useMutation({
     mutationFn: httpPostUpload,
     mutationKey: "upload",
+    onSuccess: () =>
+      notification.setMessage("Uploaded 🥳🥳🥳").setMode("success").pop(),
+    onError: () => notification.setMessage("Something went wrong 🥲🥶🥺"),
   });
 
   const createMutation = useMutation({
@@ -197,7 +200,7 @@ const WordForm = () => {
           )
         )}
         <Button
-          sx={{ width: "100%", mt: 2, py: 2.5 }}
+          sx={{ width: "100%", mt: 2, py: 2.5, fontSize: "28px" }}
           variant="contained"
           onClick={create}
         >
