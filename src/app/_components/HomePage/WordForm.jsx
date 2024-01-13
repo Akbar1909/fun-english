@@ -36,6 +36,7 @@ const WordForm = () => {
     mutationFn: httpPostWord,
     onSuccess: () =>
       notification.setMessage("Created 🥳🥳🥳").setMode("success").pop(),
+    onError: () => notification.setMessage("Something went wrong 🥲🥶🥺"),
   });
 
   const create = () => {
@@ -195,7 +196,13 @@ const WordForm = () => {
             </Box>
           )
         )}
-        <Button onClick={create}>Save</Button>
+        <Button
+          sx={{ width: "100%", mt: 2, py: 2.5 }}
+          variant="contained"
+          onClick={create}
+        >
+          {createMutation.isPending ? "Saving..." : "Save"}
+        </Button>
       </Grid>
     </Grid>
   );
