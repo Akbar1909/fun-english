@@ -11,10 +11,7 @@ import WordMeanWidget from "@/components/WordInfoWidget/WordMeanWidget";
 const WordWidget = () => {};
 
 const InternalSearchBox = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-  const search = searchParams.get("isearch");
+  const [search, setSearch] = useState("");
   const [debouncedValue, setDebouncedValue] = useState(search || "");
 
   const [, _] = useDebounce(
@@ -23,16 +20,6 @@ const InternalSearchBox = () => {
     },
     1000,
     [search]
-  );
-
-  const createQueryString = useCallback(
-    (name, value) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams]
   );
 
   const { data, ...state } = useQuery({
@@ -53,9 +40,7 @@ const InternalSearchBox = () => {
         <SearchInput
           value={search}
           onChange={(e) => {
-            router.push(
-              pathname + "?" + createQueryString("isearch", e.target.value)
-            );
+            setSearch(e.target.value);
           }}
         />
       </Grid>
