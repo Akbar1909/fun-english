@@ -29,7 +29,6 @@ const WordMeanWidget = ({
   internal = false,
   add,
 }) => {
-  const currentIndex = useRef(null);
   const [file, setFile] = useState(null);
   const saveMutate = useMutation({
     mutationFn: httpPostAttachPhotoToWord,
@@ -110,10 +109,23 @@ const WordMeanWidget = ({
                 <Typography sx={{ fontWeight: "bold" }}>
                   {definition}
                 </Typography>
-                {examples.map((example, i) => (
-                  <Typography key={i} sx={{ fontStyle: "italic", ml: 1 }}>
-                    {example.example}
-                  </Typography>
+                {examples.map(({ example, images }, i) => (
+                  <Stack key={i}>
+                    <Typography key={i} sx={{ fontStyle: "italic", ml: 1 }}>
+                      {example}
+                    </Typography>
+                    <Stack direction="row">
+                      {images.map(({ filename }, i) => (
+                        <Image
+                          width={200}
+                          height={200}
+                          src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${filename}`}
+                          key={i}
+                          alt={word}
+                        />
+                      ))}
+                    </Stack>
+                  </Stack>
                 ))}
               </Box>
               {!internal

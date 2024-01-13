@@ -14,11 +14,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashCan, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { httpPostWord } from "@/data/word/word.request";
 import notification from "@/services/notification";
+import { httpPostUpload } from "@/data/upload";
 
 const WordForm = () => {
   const [word, setWord] = useState("");
   const [values, setValues] = useState({
-    0: { definition: "", partOfSpeech: "", examples: { 0: { text: "" } } },
+    0: {
+      definition: "",
+      partOfSpeech: "",
+      examples: { 0: { text: "", mediaId: null } },
+    },
+  });
+
+  const uploadMutate = useMutation({
+    mutationFn: httpPostUpload,
+    mutationKey: "upload",
   });
 
   const createMutation = useMutation({
@@ -109,6 +119,33 @@ const WordForm = () => {
                       value={text}
                       placeholder="Enter example"
                       size="small"
+                    />
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        const formData = new FormData();
+                        formData.append("file", file);
+                        const response = await uploadMutate.mutateAsync(
+                          formData
+                        );
+
+                        setValues((prev) => ({
+                          ...prev,
+                          [i]: {
+                            ...prev[i],
+                            examples: {
+                              ...prev[i].examples,
+                              [j]: {
+                                ...prev[i].examples[j],
+                                mediaId: [response?.data?.data?.mediaId],
+                              },
+                            },
+                          },
+                        }));
+                      }}
                     />
                     <Stack direction="row">
                       <IconButton>
