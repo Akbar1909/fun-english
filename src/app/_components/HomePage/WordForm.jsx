@@ -16,15 +16,17 @@ import { httpPostWord } from "@/data/word/word.request";
 import notification from "@/services/notification";
 import { httpPostUpload } from "@/data/upload";
 
+const initialState = {
+  0: {
+    definition: "",
+    partOfSpeech: "",
+    examples: { 0: { text: "", mediaId: null } },
+  },
+};
+
 const WordForm = () => {
   const [word, setWord] = useState("");
-  const [values, setValues] = useState({
-    0: {
-      definition: "",
-      partOfSpeech: "",
-      examples: { 0: { text: "", mediaId: null } },
-    },
-  });
+  const [values, setValues] = useState(initialState);
 
   const uploadMutate = useMutation({
     mutationFn: httpPostUpload,
@@ -37,8 +39,11 @@ const WordForm = () => {
   const createMutation = useMutation({
     mutationKey: ["create", word],
     mutationFn: httpPostWord,
-    onSuccess: () =>
-      notification.setMessage("Created 🥳🥳🥳").setMode("success").pop(),
+    onSuccess: () => {
+      notification.setMessage("Created 🥳🥳🥳").setMode("success").pop();
+
+      setValues(initialState);
+    },
     onError: () => notification.setMessage("Something went wrong 🥲🥶🥺"),
   });
 
