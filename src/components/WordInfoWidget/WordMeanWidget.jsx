@@ -23,7 +23,7 @@ import notification from "@/services/notification";
 const WordMeanWidget = ({
   antonyms = [],
   definitions = [],
-  partOfSpeech,
+
   synonyms = [],
   word,
   internal = false,
@@ -50,7 +50,6 @@ const WordMeanWidget = ({
       word,
       definition,
       example,
-      partOfSpeech,
       mediaId: response?.data?.data?.mediaId,
     };
 
@@ -82,93 +81,80 @@ const WordMeanWidget = ({
       }}
     >
       <Stack>
-        <Box
-          sx={{
-            backgroundColor: (theme) => theme.palette.primary.main,
-            color: "common.white",
-            width: "fit-content",
-            px: 2,
-            borderRadius: "8px",
-          }}
-        >
-          {partOfSpeech}
-        </Box>
-        {definitions.map(({ definition, example, images }, i) => (
-          <Box
-            key={i}
-            sx={{
-              mb: 1,
-              borderTop: "1px solid",
-              marginTop: 1,
-              borderColor: (theme) => theme.palette.grey[300],
-              position: "relative",
-              p: 1,
-              position: "relative",
-            }}
-          >
-            <IconButton
-              onClick={() => {
-                currentIndex.current = i;
-                s.mutate({
-                  definition,
-                  word,
-                  example: example || "T",
-                  partOfSpeech,
-                });
+        {definitions.map(
+          ({ definition, examples, images, partOfSpeech }, i) => (
+            <Box
+              key={i}
+              sx={{
+                mb: 1,
+                borderTop: "1px solid",
+                marginTop: 1,
+                borderColor: (theme) => theme.palette.grey[300],
+                position: "relative",
+                p: 1,
+                position: "relative",
               }}
-              sx={{ position: "absolute", right: 0, top: 0 }}
             >
-              {s.isPending && currentIndex.current === i ? (
-                <CircularProgress />
-              ) : (
-                <FontAwesomeIcon icon={faPlus} />
-              )}
-            </IconButton>
-
-            <Box>
-              <Typography sx={{ fontWeight: "bold" }}>{definition}</Typography>
-              <Typography sx={{ fontStyle: "italic", ml: 1 }}>
-                {example}
-              </Typography>
-            </Box>
-            {!internal
-              ? !add && (
-                  <>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          setFile(file);
-                        }
-                      }}
-                    />
-                    <Button
-                      onClick={() => handleSave({ definition, example })}
-                      sx={{ mt: 1, width: "100%" }}
-                      variant="outlined"
-                    >
-                      Save
-                    </Button>
-                  </>
-                )
-              : images && (
-                  <Stack direction="row">
-                    {images.map(({ filename }, i) => (
-                      <Image
-                        width={200}
-                        height={200}
-                        src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${filename}`}
-                        key={i}
-                        alt={word}
+              <Box>
+                <Box
+                  sx={{
+                    backgroundColor: (theme) => theme.palette.primary.main,
+                    color: "common.white",
+                    width: "fit-content",
+                    px: 2,
+                    borderRadius: "8px",
+                  }}
+                >
+                  {partOfSpeech}
+                </Box>
+                <Typography sx={{ fontWeight: "bold" }}>
+                  {definition}
+                </Typography>
+                {examples.map((example, i) => (
+                  <Typography key={i} sx={{ fontStyle: "italic", ml: 1 }}>
+                    {example.example}
+                  </Typography>
+                ))}
+              </Box>
+              {!internal
+                ? !add && (
+                    <>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setFile(file);
+                          }
+                        }}
                       />
-                    ))}
-                  </Stack>
-                )}
-          </Box>
-        ))}
+                      <Button
+                        onClick={() => handleSave({ definition, example })}
+                        sx={{ mt: 1, width: "100%" }}
+                        variant="outlined"
+                      >
+                        Save
+                      </Button>
+                    </>
+                  )
+                : images && (
+                    <Stack direction="row">
+                      {images.map(({ filename }, i) => (
+                        <Image
+                          width={200}
+                          height={200}
+                          src={`${process.env.NEXT_PUBLIC_BASE_URL}/files/serve/${filename}`}
+                          key={i}
+                          alt={word}
+                        />
+                      ))}
+                    </Stack>
+                  )}
+            </Box>
+          )
+        )}
         {synonyms.length > 0 && (
           <ExtraInfoWidget sx={{ mb: 1 }} title={"Synonyms"} list={synonyms} />
         )}

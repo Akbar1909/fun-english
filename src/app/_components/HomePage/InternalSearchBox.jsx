@@ -35,7 +35,7 @@ const InternalSearchBox = () => {
     [searchParams]
   );
 
-  const state = useQuery({
+  const { data, ...state } = useQuery({
     queryFn: () => httpGetWordsByWord({ word: debouncedValue }),
     queryKey: ["internal-word", debouncedValue],
     select: (response) => response.data?.data,
@@ -72,20 +72,7 @@ const InternalSearchBox = () => {
         ) : state.isError ? (
           <Typography variant="h1">No words 📭</Typography>
         ) : state.isSuccess ? (
-          state.data.map((item, i) => (
-            <WordMeanWidget
-              key={i}
-              definitions={[
-                {
-                  definition: item.definition,
-                  example: item.example,
-                  images: item.images,
-                },
-              ]}
-              partOfSpeech={item.partOfSpeech}
-              internal
-            />
-          ))
+          <WordMeanWidget definitions={data?.definitions || []} internal />
         ) : (
           <Typography variant="h1">Try</Typography>
         )}
