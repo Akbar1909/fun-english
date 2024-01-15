@@ -94,21 +94,7 @@ const WordForm = () => {
                   }}
                 />
               </Stack>
-              <Stack mt={1}>
-                <TextField
-                  sx={{ flex: 1 }}
-                  name={`partOfSpeech.${i}`}
-                  value={partOfSpeech}
-                  placeholder="Enter partOfSpeech"
-                  size="small"
-                  onChange={(e) => {
-                    setValues((prev) => ({
-                      ...prev,
-                      [i]: { ...prev[i], partOfSpeech: e.target.value },
-                    }));
-                  }}
-                />
-              </Stack>
+
               <Stack mt={1}>
                 {Object.values(examples).map(({ text }, j) => (
                   <Stack direction="row" width="100%" key={j}>
@@ -205,6 +191,21 @@ const WordForm = () => {
                     </Stack>
                   </Stack>
                 ))}
+              </Stack>
+              <Stack mt={1}>
+                <TextField
+                  sx={{ flex: 1 }}
+                  name={`partOfSpeech.${i}`}
+                  value={partOfSpeech}
+                  placeholder="Enter partOfSpeech"
+                  size="small"
+                  onChange={(e) => {
+                    setValues((prev) => ({
+                      ...prev,
+                      [i]: { ...prev[i], partOfSpeech: e.target.value },
+                    }));
+                  }}
+                />
               </Stack>
             </Box>
           )
