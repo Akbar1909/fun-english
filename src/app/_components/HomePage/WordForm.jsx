@@ -43,6 +43,7 @@ const WordForm = () => {
       notification.setMessage("Created 🥳🥳🥳").setMode("success").pop();
 
       setValues(initialState);
+      setWord("");
     },
     onError: () => notification.setMessage("Something went wrong 🥲🥶🥺"),
   });
