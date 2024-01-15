@@ -83,6 +83,7 @@ const WordForm = () => {
                   name={`definition.${i}`}
                   value={definition}
                   size="small"
+                  required
                   placeholder="Enter definition"
                   onChange={(e) => {
                     setValues((prev) => ({
@@ -91,6 +92,8 @@ const WordForm = () => {
                     }));
                   }}
                 />
+              </Stack>
+              <Stack mt={1}>
                 <TextField
                   sx={{ flex: 1 }}
                   name={`partOfSpeech.${i}`}
@@ -110,6 +113,7 @@ const WordForm = () => {
                   <Stack direction="row" width="100%" key={j}>
                     <TextField
                       fullWidth
+                      required
                       onChange={(e) =>
                         setValues((prev) => ({
                           ...prev,
@@ -129,7 +133,7 @@ const WordForm = () => {
                       placeholder="Enter example"
                       size="small"
                     />
-                    <input
+                    {/* <input
                       type="file"
                       multiple
                       accept="image/*"
@@ -155,7 +159,7 @@ const WordForm = () => {
                           },
                         }));
                       }}
-                    />
+                    /> */}
                     <Stack direction="row">
                       <IconButton>
                         <FontAwesomeIcon
